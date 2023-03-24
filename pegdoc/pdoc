@@ -1,0 +1,117 @@
+(def usage
+  ``
+  Usage: pdoc [peg-special]
+  View peg docs for a peg special.
+
+    --help    show this output
+
+  With a peg-special, but no options, show some documentation.
+
+  With no arguments, lists all peg specials.
+  ``)
+
+# assumes example file has certain structure
+(defn massage-lines
+  [lines]
+  (def m-lines @[])
+  (var i 0)
+  # skip first line if import
+  (when (peg/match ~(sequence "(import")
+                   (first lines))
+    (++ i))
+  (while (< i (length lines))
+    (def cur-line (get lines i))
+    # stop at first (comment ...) form
+    (if (peg/match ~(sequence "(comment")
+                     cur-line)
+      (break)
+      (if (string/has-prefix? "# " cur-line)
+        (array/push m-lines (string/slice cur-line 2))
+        (array/push m-lines cur-line)))
+    (++ i))
+  #
+  m-lines)
+
+(defn dump-doc
+  [file-path]
+  (def content
+    (slurp file-path))
+  (def lines
+    (string/split "\n" content))
+  (each line lines
+    (->> line
+         (peg/match ~(sequence "# "
+                               (capture (to -1))))
+         first
+         print)))
+
+(defn dump-example-doc
+  [file-path]
+  (def content
+    (slurp file-path))
+  (def lines
+    (string/split "\n" content))
+  (def doc-lines
+    (massage-lines lines))
+  (each line doc-lines
+    (print line)))
+
+(def alias-table
+  {"+" "choice"
+   "*" "sequence"
+   "opt" "between"
+   "?" "between"
+   "!" "not"
+   ">" "look"
+   "<-" "capture"
+   "quote" "capture"
+   "/" "replace"
+   "$" "position"
+   "%" "accumulate"
+   "->" "backref"
+   #
+   "integer" "0.integer"
+   "string" "0.string"
+   "struct" "0.struct"})
+
+(defn main
+  [& argv]
+
+  # XXX: improve args handling
+  (when-let [arg (get argv 1)]
+    (when (= "--help" arg)
+      (print usage)
+      (os/exit 0)))
+
+  (def show-example
+    (when (> (length argv) 1)
+      (= "--eg" (get argv 1))))
+
+  (def peg-special
+    (when (> (length argv) 1)
+      (let [cand (get argv 1)]
+        (if (= "--eg" cand)
+          nil
+          (if-let [alias (get alias-table cand)]
+            alias
+            cand)))))
+
+  (unless peg-special
+    (if-let [[file-path _] (module/find "pegdoc/examples/0.all-the-names")]
+      (do
+        (dump-doc file-path)
+        (os/exit 0))
+      (do
+        (eprint "Hmm, something is wrong, failed to find all the names.")
+        (os/exit 1))))
+
+  (def sp-ex-path
+    (string "pegdoc/examples/" peg-special))
+
+  (let [[file-path _] (module/find sp-ex-path)]
+    (unless file-path
+      (eprintf "Did not find doc for `%s`" peg-special)
+      (os/exit 1))
+    (when (os/stat file-path)
+      (dump-example-doc file-path))))
+
