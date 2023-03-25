@@ -13,9 +13,13 @@ Usage: pdoc -h|--help
        pdoc [option] peg-special
 View peg information.
 
-  -d, --doc     show doc
-  -x, --eg      show examples
-  -h, --help    show this output
+  -h, --help         show this output
+
+  -d, --doc          show doc
+  -x, --eg           show examples
+
+  --bash-completion  output bash-completion bits
+  --raw-all          show all names to help completion
 
 With a peg-special, but no options, show docs and examples.
 If any of "integer", "string", or "struct" are specified as the
@@ -30,7 +34,7 @@ exceptions mentioned above), show associated examples.
 
 With no arguments, lists all peg specials.
 
-Be careful to quote shortnames (e.g. *, ->, <-) appropriately
+Be careful to quote shortnames (e.g. *, ->, >, <-) appropriately
 so the shell doesn't process them in an undesired fashion.
 ```
 

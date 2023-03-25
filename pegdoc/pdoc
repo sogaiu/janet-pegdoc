@@ -5,9 +5,13 @@
          pdoc [option] peg-special
   View peg information.
 
-    -d, --doc     show doc
-    -x, --eg      show examples
-    -h, --help    show this output
+    -h, --help         show this output
+
+    -d, --doc          show doc
+    -x, --eg           show examples
+
+    --bash-completion  output bash-completion bits
+    --raw-all          show all names to help completion
 
   With a peg-special, but no options, show docs and examples.
   If any of "integer", "string", or "struct" are specified as the
@@ -22,7 +26,7 @@
 
   With no arguments, lists all peg specials.
 
-  Be careful to quote shortnames (e.g. *, ->, <-) appropriately
+  Be careful to quote shortnames (e.g. *, ->, >, <-) appropriately
   so the shell doesn't process them in an undesired fashion.
   ``)
 
@@ -148,6 +152,12 @@
     (while (< i argc)
       (def arg (get argv i))
       (cond
+        (get {"--bash-completion" true} arg)
+        (put opts :bash-completion true)
+        #
+        (get {"--raw-all" true} arg)
+        (put opts :raw-all true)
+        #
         (get {"--doc" true
               "-d" true}
              arg)
@@ -168,6 +178,51 @@
   #
   [opts rest])
 
+(defn print-all-names
+  [dir-path]
+  (def file-names (os/dir dir-path))
+  (def names
+    (->> file-names
+         # drop .janet extension
+         (map |(string/slice $ 0
+                             (last (string/find-all "." $))))
+         # only keep things that have names
+         (filter |(not (string/has-prefix? "0." $)))))
+  # add things with no names
+  (array/push names "integer")
+  (array/push names "string")
+  (array/push names "struct")
+  (each alias (keys alias-table)
+    (let [name (get alias-table alias)]
+      (unless (string/has-prefix? "0." name)
+        (when (index-of name names)
+          (array/push names alias)))))
+  # print all names
+  (each name (sort names)
+    (cond
+      (= name "*")
+      # XXX: not sure if this quoting will work on windows...
+      (print "\"*\"")
+      #
+      (= name "->")
+      (print "\"->\"")
+      #
+      (= name ">")
+      (print "\">\"")
+      #
+      (= name "<-")
+      (print "\"<-\"")
+      #
+      (print name))))
+
+(def bash-completion
+  ``
+  _pdoc_specials() {
+      COMPREPLY=( $(compgen -W "$(pdoc --raw-all)" -- ${COMP_WORDS[COMP_CWORD]}) );
+  }
+  complete -F _pdoc_specials pdoc
+  ``)
+
 (defn main
   [& argv]
   (def [opts rest]
@@ -182,12 +237,30 @@
       (eprint "Need one non-option argument.")
       (os/exit 1)))
 
+  (when (opts :bash-completion)
+    (print bash-completion)
+    (os/exit 0))
+
+  # show all special names including aliases (and string, integer, struct)
+  (when (opts :raw-all)
+    (if-let [[file-path _]
+             (module/find "pegdoc/examples/0.all-the-names")]
+      (let [dir-path
+            (string/slice file-path 0
+                          (last (string/find-all "/" file-path)))]
+        (print-all-names dir-path)
+        (os/exit 0))
+      (do
+        (eprint "Hmm, something is wrong, failed to find names.")
+        (os/exit 1))))
+
   (def peg-special
     (let [cand (first rest)]
       (if-let [alias (get alias-table cand)]
         alias
         cand)))
 
+  # show info about all specials
   (unless peg-special
     (if-let [[file-path _]
              (module/find "pegdoc/examples/0.all-the-names")]
@@ -198,6 +271,7 @@
         (eprint "Hmm, something is wrong, failed to find all the names.")
         (os/exit 1))))
 
+  # show docs and/or examples for a peg-special
   (let [[file-path _]
         (module/find (string "pegdoc/examples/" peg-special))]
 
