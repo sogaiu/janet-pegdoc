@@ -2,15 +2,20 @@
   ``
   Usage: pdoc -h|--help
          pdoc [peg-special]
-         pdoc -x|--eg peg-special
+         pdoc [option] peg-special
   View peg information.
 
+    -d, --doc     show doc
     -x, --eg      show examples
     -h, --help    show this output
 
-  With a peg-special, but no options, show some documentation.
+  With a peg-special, but no options, show docs and examples.
   If any of "integer", "string", or "struct" are specified as the
-  "peg-special", show docs about using those as PEG constructs.
+  "peg-special", show docs and examples about using those as PEG
+  constructs.
+
+  With the `-d` or `--doc` option and a peg-special (or one of the
+  exceptions mentioned above), show associated docs.
 
   With the `-x` or `--eg` option and a peg-special (or one of the
   exceptions mentioned above), show associated examples.
@@ -132,39 +137,56 @@
    "string" "0.string"
    "struct" "0.struct"})
 
+(defn parse-argv
+  [argv]
+  (def opts @{})
+  (def rest @[])
+  (def argc (length argv))
+  #
+  (when (> argc 1)
+    (var i 1)
+    (while (< i argc)
+      (def arg (get argv i))
+      (cond
+        (get {"--doc" true
+              "-d" true}
+             arg)
+        (put opts :doc true)
+        #
+        (get {"--eg" true
+              "-x" true}
+             arg)
+        (put opts :eg true)
+        #
+        (get {"--help" true
+              "-h" true}
+             arg)
+        (put opts :help true)
+        #
+        (array/push rest arg))
+      (++ i)))
+  #
+  [opts rest])
+
 (defn main
   [& argv]
-  (def my-argv
-    (array/slice argv))
+  (def [opts rest]
+    (parse-argv argv))
 
-  # XXX: improve args handling
-  (when-let [arg (get my-argv 1)]
-    (when (get {"-h" true
-                "--help" true}
-               arg)
-      (print usage)
-      (os/exit 0)))
+  (when (opts :help)
+    (print usage)
+    (os/exit 0))
 
-  (def show-examples
-    (when (> (length my-argv) 1)
-      (let [arg (get my-argv 1)]
-        (when (get {"--eg" true
-                    "-x" true}
-                   arg)
-          (unless (> (length my-argv) 2)
-            (eprint "One more argument needed to use -x|--eg")
-            (os/exit 1))
-          (array/remove my-argv 1)
-          true))))
+  (when (or (opts :doc) (opts :eg))
+    (when (empty? rest)
+      (eprint "Need one non-option argument.")
+      (os/exit 1)))
 
   (def peg-special
-    (when (> (length my-argv) 1)
-      (let [cand (get my-argv 1)]
-        (if (= "--eg" cand)
-          nil
-          (if-let [alias (get alias-table cand)]
-            alias
-            cand)))))
+    (let [cand (first rest)]
+      (if-let [alias (get alias-table cand)]
+        alias
+        cand)))
 
   (unless peg-special
     (if-let [[file-path _]
@@ -188,7 +210,16 @@
                file-path)
       (os/exit 1))
 
-    (if show-examples
+    (when (or (and (opts :doc) (opts :eg))
+              (and (nil? (opts :doc)) (nil? (opts :eg))))
+      (dump-special-doc file-path)
+      (print (string/repeat "#" 68))
       (dump-special-examples file-path)
-      (dump-special-doc file-path))))
+      (os/exit 0))
+
+    (when (opts :doc)
+      (dump-special-doc file-path))
+
+    (when (opts :eg)
+      (dump-special-examples file-path))))
 

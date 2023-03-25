@@ -10,15 +10,20 @@ Getting basic help.
 $ pdoc -h
 Usage: pdoc -h|--help
        pdoc [peg-special]
-       pdoc -x|--eg peg-special
+       pdoc [option] peg-special
 View peg information.
 
+  -d, --doc     show doc
   -x, --eg      show examples
   -h, --help    show this output
 
-With a peg-special, but no options, show some documentation.
+With a peg-special, but no options, show docs and examples.
 If any of "integer", "string", or "struct" are specified as the
-"peg-special", show docs about using those as PEG constructs.
+"peg-special", show docs and examples about using those as PEG
+constructs.
+
+With the `-d` or `--doc` option and a peg-special (or one of the
+exceptions mentioned above), show associated docs.
 
 With the `-x` or `--eg` option and a peg-special (or one of the
 exceptions mentioned above), show associated examples.
@@ -29,10 +34,40 @@ Be careful to quote shortnames (e.g. *, ->, <-) appropriately
 so the shell doesn't process them in an undesired fashion.
 ```
 
-Show doc for the peg special `to`.
+Show doc and examples for a peg special.
 
 ```
-$ pdoc to
+$ pdoc any
+
+`(any patt)`
+
+Matches 0 or more repetitions of `patt`
+
+####################################################################
+
+# any with empty string
+(peg/match ~(any "a")
+           "")
+# =>
+@[]
+
+# any
+(peg/match ~(any "a")
+           "aa")
+# =>
+@[]
+
+# any with capture
+(peg/match ~(capture (any "a"))
+           "aa")
+# =>
+@["aa"]
+```
+
+Show just doc for the peg special `to`.
+
+```
+$ pdoc -d to
 
 `(to patt)`
 
@@ -42,10 +77,10 @@ If the end of the input is reached and `patt` is not matched, the entire
 pattern does not match.
 ```
 
-Show doc for a peg special via an alias.
+Show just doc for a peg special via an alias.
 
 ```
-$ pdoc ?
+$ pdoc -d ?
 
 `(between min max patt)`
 
@@ -54,7 +89,7 @@ Matches between `min` and `max` (inclusive) repetitions of `patt`
 `(opt patt)` and `(? patt)` are aliases for `(between 0 1 patt)`
 ```
 
-Show examples for a peg special.
+Show just examples for a peg special.
 
 ```
 $ pdoc -x string
