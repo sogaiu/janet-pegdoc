@@ -1,3 +1,7 @@
+# notes:
+#
+# * depends on structure of files in margaret's examples directory
+
 (def usage
   ``
   Usage: pdoc [option] [peg-special]
