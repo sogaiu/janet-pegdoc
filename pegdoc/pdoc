@@ -1,17 +1,17 @@
 (def usage
   ``
   Usage: pdoc -h|--help
-         pdoc [peg-special]
-         pdoc [option] peg-special
+         pdoc [option] [peg-special]
+
   View peg information.
 
-    -h, --help         show this output
+    -h, --help                show this output
 
-    -d, --doc          show doc
-    -x, --eg           show examples
+    -d, --doc <peg-special>   show doc
+    -x, --eg <peg-special>    show examples
 
-    --bash-completion  output bash-completion bits
-    --raw-all          show all names to help completion
+    --bash-completion         output bash-completion bits
+    --raw-all                 show all names to help completion
 
   With a peg-special, but no options, show docs and examples.
   If any of "integer", "string", or "struct" are specified as the
