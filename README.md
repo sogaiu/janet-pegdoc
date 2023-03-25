@@ -18,6 +18,8 @@ View peg information.
   -x, --eg <peg-special>    show examples
 
   --bash-completion         output bash-completion bits
+  --fish-completion         output fish-completion bits
+  --zsh-completion          output zsh-completion bits
   --raw-all                 show all names to help completion
 
 With a peg-special, but no options, show docs and examples.
