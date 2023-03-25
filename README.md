@@ -7,6 +7,7 @@ Tool for quick doc lookups and examples of Janet's PEG specials.
 Getting basic help.
 
 ```
+$ pdoc -h
 Usage: pdoc -h|--help
        pdoc [peg-special]
        pdoc -x|--eg peg-special
