@@ -9,6 +9,11 @@
     -h, --help    show this output
 
   With a peg-special, but no options, show some documentation.
+  If any of "integer", "string", or "struct" are specified as the
+  "peg-special", show docs about using those as PEG constructs.
+
+  With the `-x` or `--eg` option and a peg-special (or one of the
+  exceptions mentioned above), show associated examples.
 
   With no arguments, lists all peg specials.
 

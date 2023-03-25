@@ -7,7 +7,6 @@ Tool for quick doc lookups and examples of Janet's PEG specials.
 Getting basic help.
 
 ```
-$ pdoc -h
 Usage: pdoc -h|--help
        pdoc [peg-special]
        pdoc -x|--eg peg-special
@@ -17,10 +16,16 @@ View peg information.
   -h, --help    show this output
 
 With a peg-special, but no options, show some documentation.
+If any of "integer", "string", or "struct" are specified as the
+"peg-special", show docs about using those as PEG constructs.
+
+With the `-x` or `--eg` option and a peg-special (or one of the
+exceptions mentioned above), show associated examples.
 
 With no arguments, lists all peg specials.
 
 Be careful to quote shortnames (e.g. *, ->, <-) appropriately
+so the shell doesn't process them in an undesired fashion.
 ```
 
 Show doc for the peg special `to`.
