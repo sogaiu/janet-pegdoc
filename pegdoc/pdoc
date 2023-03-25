@@ -27,6 +27,8 @@
     (slurp file-path))
   (def lines
     (string/split "\n" content))
+  (when (empty? (array/peek lines))
+    (array/pop lines))
   (each line lines
     (->> line
          (peg/match ~(sequence "# "
