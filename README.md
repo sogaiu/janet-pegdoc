@@ -88,6 +88,7 @@ Primitive Patterns
   Range Patterns
   Set Patterns
   String Patterns
+
 Combining Patterns
   `any`
   `at-least`
@@ -105,6 +106,7 @@ Combining Patterns
   `thru`
   `to`
   `unref`
+
 Captures
   `accumulate` aka `%`
   `argument`
