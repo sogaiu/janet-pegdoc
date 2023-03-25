@@ -8,8 +8,7 @@ Getting basic help.
 
 ```
 $ pdoc -h
-Usage: pdoc -h|--help
-       pdoc [option] [peg-special]
+Usage: pdoc [option] [peg-special]
 
 View peg information.
 
