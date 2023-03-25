@@ -1,42 +1,16 @@
 # janet-pegdoc (pdoc)
 
-Tool for quick doc lookups and examples of Janet's PEG specials.
+Tool for doc lookups, examples, and quizzes of Janet's PEG specials.
 
 ## Usage Examples
 
-Getting basic help.
+Ask for a quiz question.
 
 ```
-$ pdoc -h
-Usage: pdoc [option] [peg-special]
-
-View peg information.
-
-  -h, --help                show this output
-
-  -d, --doc <peg-special>   show doc
-  -x, --eg <peg-special>    show examples
-
-  --bash-completion         output bash-completion bits
-  --fish-completion         output fish-completion bits
-  --zsh-completion          output zsh-completion bits
-  --raw-all                 show all names to help completion
-
-With a peg-special, but no options, show docs and examples.
-If any of "integer", "string", or "struct" are specified as the
-"peg-special", show docs and examples about using those as PEG
-constructs.
-
-With the `-d` or `--doc` option and a peg-special (or one of the
-exceptions mentioned above), show associated docs.
-
-With the `-x` or `--eg` option and a peg-special (or one of the
-exceptions mentioned above), show associated examples.
-
-With no arguments, lists all peg specials.
-
-Be careful to quote shortnames (e.g. *, ->, >, <-) appropriately
-so the shell doesn't process them in an undesired fashion.
+$ pdoc --quiz range
+(peg/match ~(range "aa")
+           "a")
+# =>
 ```
 
 Show doc and examples for a peg special.
@@ -170,3 +144,44 @@ Captures
   `uint`
   `uint-be`
 ```
+
+Get basic help.
+
+```
+$ pdoc -h
+Usage: pdoc [option] [peg-special]
+
+View peg information.
+
+  -h, --help                  show this output
+
+  -d, --doc <peg-special>     show doc
+  -x, --eg <peg-special>      show examples
+  -q, --quiz [<peg-special>]  show quiz question
+
+  --bash-completion           output bash-completion bits
+  --fish-completion           output fish-completion bits
+  --zsh-completion            output zsh-completion bits
+  --raw-all                   show all names to help completion
+
+With a peg-special, but no options, show docs and examples.
+If any of "integer", "string", or "struct" are specified as the
+"peg-special", show docs and examples about using those as PEG
+constructs.
+
+With the `-d` or `--doc` option and a peg-special (or one of the
+exceptions mentioned above), show associated docs.
+
+With the `-x` or `--eg` option and a peg-special (or one of the
+exceptions mentioned above), show associated examples.
+
+With the `-q` or `--quiz` option, show a quiz question for
+a specified peg special, or if not specified, a random quiz
+question.
+
+With no arguments, lists all peg specials.
+
+Be careful to quote shortnames (e.g. *, ->, >, <-) appropriately
+so the shell doesn't process them in an undesired fashion.
+```
+
