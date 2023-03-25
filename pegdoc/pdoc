@@ -176,9 +176,9 @@
         (eprint "Hmm, something is wrong, failed to find all the names.")
         (os/exit 1))))
 
-  (let [sp-eg-path
-        (string "pegdoc/examples/" peg-special)
-        [file-path _] (module/find sp-eg-path)]
+  (let [[file-path _]
+        (module/find (string "pegdoc/examples/" peg-special))]
+
     (unless file-path
       (eprintf "Did not find doc for `%s`" peg-special)
       (os/exit 1))
