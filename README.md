@@ -1,21 +1,26 @@
 # janet-pegdoc (pdoc)
 
-Tool for quick doc lookups of Janet's peg specials.
+Tool for quick doc lookups and examples of Janet's PEG specials.
 
 ## Usage Examples
 
 Getting basic help.
 
 ```
-$ pdoc --help
-Usage: pdoc [peg-special]
-View peg docs for a peg special.
+$ pdoc -h
+Usage: pdoc -h|--help
+       pdoc [peg-special]
+       pdoc -x|--eg peg-special
+View peg information.
 
-  --help    show this output
+  -x, --eg      show examples
+  -h, --help    show this output
 
 With a peg-special, but no options, show some documentation.
 
 With no arguments, lists all peg specials.
+
+Be careful to quote shortnames (e.g. *, ->, <-) appropriately
 ```
 
 Show doc for the peg special `to`.
@@ -41,6 +46,32 @@ $ pdoc ?
 Matches between `min` and `max` (inclusive) repetitions of `patt`
 
 `(opt patt)` and `(? patt)` are aliases for `(between 0 1 patt)`
+```
+
+Show examples for a peg special.
+
+```
+$ pdoc -x string
+
+(peg/match "cat" "cat")
+# =>
+@[]
+
+(peg/match "cat" "cat1")
+# =>
+@[]
+
+(peg/match "" "")
+# =>
+@[]
+
+(peg/match "" "a")
+# =>
+@[]
+
+(peg/match "cat" "dog")
+# =>
+nil
 ```
 
 Show all peg specials.

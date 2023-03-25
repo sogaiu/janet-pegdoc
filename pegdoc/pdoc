@@ -1,17 +1,81 @@
 (def usage
   ``
-  Usage: pdoc [peg-special]
-  View peg docs for a peg special.
+  Usage: pdoc -h|--help
+         pdoc [peg-special]
+         pdoc -x|--eg peg-special
+  View peg information.
 
-    --help    show this output
+    -x, --eg      show examples
+    -h, --help    show this output
 
   With a peg-special, but no options, show some documentation.
 
   With no arguments, lists all peg specials.
+
+  Be careful to quote shortnames (e.g. *, ->, <-) appropriately
+  so the shell doesn't process them in an undesired fashion.
   ``)
 
+(defn dump-doc
+  [file-path]
+  (def content
+    (slurp file-path))
+  (def lines
+    (string/split "\n" content))
+  (each line lines
+    (->> line
+         (peg/match ~(sequence "# "
+                               (capture (to -1))))
+         first
+         print)))
+
 # assumes example file has certain structure
-(defn massage-lines
+(defn massage-lines-for-examples
+  [lines]
+  (def n-lines (length lines))
+  (def m-lines @[])
+  (var i 0)
+  # skip first line if import
+  (when (peg/match ~(sequence "(import")
+                   (first lines))
+    (++ i))
+  # get "inside" comment form
+  (while (< i n-lines)
+    (def cur-line (get lines i))
+    # whether loop ends or not, index increases
+    (++ i)
+    # stop at first (comment ...) form
+    (when (peg/match ~(sequence "(comment")
+                     cur-line)
+      (break)))
+  # save lines until (comment ...) ends
+  (while (< i n-lines)
+    (def cur-line (get lines i))
+    # supposedly where the "(comment ...)" form ends -- hacky
+    (if (peg/match ~(sequence (any (set " \t\f\v"))
+                              ")")
+                   cur-line)
+      (break)
+      (if (string/has-prefix? "  " cur-line)
+        (array/push m-lines (string/slice cur-line 2))
+        (array/push m-lines cur-line)))
+    (++ i))
+  #
+  m-lines)
+
+(defn dump-special-examples
+  [file-path]
+  (def content
+    (slurp file-path))
+  (def lines
+    (string/split "\n" content))
+  (def examples-lines
+    (massage-lines-for-examples lines))
+  (each line examples-lines
+    (print line)))
+
+# assumes example file has certain structure
+(defn massage-lines-for-doc
   [lines]
   (def m-lines @[])
   (var i 0)
@@ -32,27 +96,14 @@
   #
   m-lines)
 
-(defn dump-doc
-  [file-path]
-  (def content
-    (slurp file-path))
-  (def lines
-    (string/split "\n" content))
-  (each line lines
-    (->> line
-         (peg/match ~(sequence "# "
-                               (capture (to -1))))
-         first
-         print)))
-
-(defn dump-example-doc
+(defn dump-special-doc
   [file-path]
   (def content
     (slurp file-path))
   (def lines
     (string/split "\n" content))
   (def doc-lines
-    (massage-lines lines))
+    (massage-lines-for-doc lines))
   (each line doc-lines
     (print line)))
 
@@ -76,20 +127,32 @@
 
 (defn main
   [& argv]
+  (def my-argv
+    (array/slice argv))
 
   # XXX: improve args handling
-  (when-let [arg (get argv 1)]
-    (when (= "--help" arg)
+  (when-let [arg (get my-argv 1)]
+    (when (get {"-h" true
+                "--help" true}
+               arg)
       (print usage)
       (os/exit 0)))
 
-  (def show-example
-    (when (> (length argv) 1)
-      (= "--eg" (get argv 1))))
+  (def show-examples
+    (when (> (length my-argv) 1)
+      (let [arg (get my-argv 1)]
+        (when (get {"--eg" true
+                    "-x" true}
+                   arg)
+          (unless (> (length my-argv) 2)
+            (eprint "One more argument needed to use -x|--eg")
+            (os/exit 1))
+          (array/remove my-argv 1)
+          true))))
 
   (def peg-special
-    (when (> (length argv) 1)
-      (let [cand (get argv 1)]
+    (when (> (length my-argv) 1)
+      (let [cand (get my-argv 1)]
         (if (= "--eg" cand)
           nil
           (if-let [alias (get alias-table cand)]
@@ -97,7 +160,8 @@
             cand)))))
 
   (unless peg-special
-    (if-let [[file-path _] (module/find "pegdoc/examples/0.all-the-names")]
+    (if-let [[file-path _]
+             (module/find "pegdoc/examples/0.all-the-names")]
       (do
         (dump-doc file-path)
         (os/exit 0))
@@ -105,13 +169,14 @@
         (eprint "Hmm, something is wrong, failed to find all the names.")
         (os/exit 1))))
 
-  (def sp-ex-path
-    (string "pegdoc/examples/" peg-special))
-
-  (let [[file-path _] (module/find sp-ex-path)]
+  (let [sp-eg-path
+        (string "pegdoc/examples/" peg-special)
+        [file-path _] (module/find sp-eg-path)]
     (unless file-path
       (eprintf "Did not find doc for `%s`" peg-special)
       (os/exit 1))
     (when (os/stat file-path)
-      (dump-example-doc file-path))))
+      (if show-examples
+        (dump-special-examples file-path)
+        (dump-special-doc file-path)))))
 
