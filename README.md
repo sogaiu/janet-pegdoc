@@ -84,6 +84,7 @@ Show all peg specials.
 
 ```
 $ pdoc
+
 Primitive Patterns
   Integer Patterns
   Range Patterns
