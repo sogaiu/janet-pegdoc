@@ -63,10 +63,14 @@
                           (dec (length file-names)))
         all-idx (index-of "0.all-the-names.janet" file-names)]
     (unless all-idx
-      (errorf "Unexpected failure to find file with all the names: %M" 
+      (errorf "Unexpected failure to find file with all the names: %M"
               file-names))
-    (get (array/remove file-names all-idx)
-         idx)))
+    (def file-name
+      (get (array/remove file-names all-idx)
+           idx))
+    # return name without extension
+    (string/slice file-name 0
+                  (last (string/find-all "." file-name)))))
 
 (defn main
   [& argv]
@@ -83,7 +87,7 @@
 
   # show all special names including aliases (and string, integer, struct)
   (when (opts :raw-all)
-    (def file-names 
+    (def file-names
       (try
         (all-example-file-names)
         ([e]
@@ -111,7 +115,7 @@
   (unless peg-special
     # show random quiz question
     (when (opts :quiz)
-      (def file-names 
+      (def file-names
         (try
           (all-example-file-names)
           ([e]
@@ -123,7 +127,12 @@
         (os/exit 1))
       (def choice
         (choose-random-special file-names))
-      (dump/special-quiz (string "pegdoc/examples/" choice))
+      (def [choice-path _]
+        (module/find (string "pegdoc/examples/" choice)))
+      (unless (os/stat choice-path)
+        (eprintf "Failed to find example file: %s" choice-path)
+        (os/exit 1))
+      (dump/special-quiz choice-path)
       (os/exit 0))
     # or, show info about all specials
     (if-let [[file-path _]
