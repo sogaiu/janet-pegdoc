@@ -1,6 +1,7 @@
 # janet-pegdoc (pdoc)
 
-Tool for doc lookups, examples, and quizzes of Janet's PEG specials.
+Tool for doc lookups, examples, and quizzes of [Janet's PEG
+specials](https://janet-lang.org/docs/peg.html).
 
 ## Usage Examples
 
