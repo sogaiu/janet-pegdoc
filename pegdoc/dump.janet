@@ -1,40 +1,24 @@
-(import ./alias :as al)
 (import ./extract :as ex)
 
+# XXX: not sure if this quoting will work on windows...
+(defn escape
+  [a-str]
+  (string "\""
+          a-str
+          "\""))
+
 (defn all-names
-  [file-names]
-  (def names
-    (->> file-names
-         # drop .janet extension
-         (map |(string/slice $ 0
-                             (last (string/find-all "." $))))
-         # only keep things that have names
-         (filter |(not (string/has-prefix? "0." $)))))
-  # add things with no names
-  (array/push names "integer")
-  (array/push names "string")
-  (array/push names "struct")
-  (each alias (keys al/alias-table)
-    (let [name (get al/alias-table alias)]
-      (unless (string/has-prefix? "0." name)
-        (when (index-of name names)
-          (array/push names alias)))))
+  [names]
   # print all names
   (each name (sort names)
-    (cond
-      (= name "*")
-      # XXX: not sure if this quoting will work on windows...
-      (print "\"*\"")
-      #
-      (= name "->")
-      (print "\"->\"")
-      #
-      (= name ">")
-      (print "\">\"")
-      #
-      (= name "<-")
-      (print "\"<-\"")
-      #
+    # XXX: anything missing?
+    # XXX: anything platform-specific?
+    (if (get {"*" true
+              "->" true
+              ">" true
+              "<-" true}
+             name)
+      (print (escape name))
       (print name))))
 
 (defn doc

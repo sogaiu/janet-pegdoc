@@ -55,7 +55,29 @@
                           (last (string/find-all "/" file-path)))]
         (unless (os/stat dir-path)
           (errorf "Unexpected directory non-existence:" dir-path))
+        #
         (os/dir dir-path)))))
+
+(defn all-names
+  [file-names]
+  (def names
+    (->> file-names
+         # drop .janet extension
+         (map |(string/slice $ 0
+                             (last (string/find-all "." $))))
+         # only keep things that have names
+         (filter |(not (string/has-prefix? "0." $)))))
+  # add things with no names
+  (array/push names "integer")
+  (array/push names "string")
+  (array/push names "struct")
+  (each alias (keys al/alias-table)
+    (let [name (get al/alias-table alias)]
+      (unless (string/has-prefix? "0." name)
+        (when (index-of name names)
+          (array/push names alias)))))
+  #
+  names)
 
 (defn choose-random-special
   [file-names]
@@ -98,7 +120,7 @@
     (unless file-names
       (eprintf "Failed to find all names.")
       (os/exit 1))
-    (dump/all-names file-names)
+    (dump/all-names (all-names file-names))
     (os/exit 0))
 
   # check if there was a peg special specified
