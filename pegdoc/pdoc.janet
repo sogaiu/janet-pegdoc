@@ -11,7 +11,7 @@
   ``
   Usage: pdoc [option] [peg-special]
 
-  View peg information.
+  View Janet PEG information.
 
     -h, --help                  show this output
 
@@ -30,15 +30,17 @@
   constructs.
 
   With the `-d` or `--doc` option, show docs for specified
-  peg special, or if none, of a randomly chosen one.
+  PEG special, or if none specified, of a randomly chosen one.
 
   With the `-x` or `--eg` option, show examples for
-  specified peg special, or if none, of a randomly chosen one.
+  specified PEG special, or if none specified, of a randomly chosen
+  one.
 
   With the `-q` or `--quiz` option, show quiz question for
-  specified peg special, or if none, of a randonly chosen one.
+  specified PEG special, or if none specified, of a randonly chosen
+  one.
 
-  With no arguments, lists all peg specials.
+  With no arguments, lists all PEG specials.
 
   Be careful to quote shortnames (e.g. *, ->, >, <-, etc.)
   appropriately so the shell doesn't process them in an undesired
