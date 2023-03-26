@@ -155,8 +155,8 @@ View peg information.
 
   -h, --help                  show this output
 
-  -d, --doc <peg-special>     show doc
-  -x, --eg <peg-special>      show examples
+  -d, --doc [<peg-special>]   show doc
+  -x, --eg [<peg-special>]    show examples
   -q, --quiz [<peg-special>]  show quiz question
 
   --bash-completion           output bash-completion bits
@@ -169,19 +169,19 @@ If any of "integer", "string", or "struct" are specified as the
 "peg-special", show docs and examples about using those as PEG
 constructs.
 
-With the `-d` or `--doc` option and a peg-special (or one of the
-exceptions mentioned above), show associated docs.
+With the `-d` or `--doc` option, show docs for specified
+peg special, or if none, of a randomly chosen one.
 
-With the `-x` or `--eg` option and a peg-special (or one of the
-exceptions mentioned above), show associated examples.
+With the `-x` or `--eg` option, show examples for
+specified peg special, or if none, of a randomly chosen one.
 
-With the `-q` or `--quiz` option, show a quiz question for
-a specified peg special, or if not specified, a random quiz
-question.
+With the `-q` or `--quiz` option, show quiz question for
+specified peg special, or if none, of a randonly chosen one.
 
 With no arguments, lists all peg specials.
 
-Be careful to quote shortnames (e.g. *, ->, >, <-) appropriately
-so the shell doesn't process them in an undesired fashion.
+Be careful to quote shortnames (e.g. *, ->, >, <-, etc.)
+appropriately so the shell doesn't process them in an undesired
+fashion.
 ```
 

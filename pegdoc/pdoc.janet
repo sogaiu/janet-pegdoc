@@ -15,8 +15,8 @@
 
     -h, --help                  show this output
 
-    -d, --doc <peg-special>     show doc
-    -x, --eg <peg-special>      show examples
+    -d, --doc [<peg-special>]   show doc
+    -x, --eg [<peg-special>]    show examples
     -q, --quiz [<peg-special>]  show quiz question
 
     --bash-completion           output bash-completion bits
@@ -29,20 +29,20 @@
   "peg-special", show docs and examples about using those as PEG
   constructs.
 
-  With the `-d` or `--doc` option and a peg-special (or one of the
-  exceptions mentioned above), show associated docs.
+  With the `-d` or `--doc` option, show docs for specified
+  peg special, or if none, of a randomly chosen one.
 
-  With the `-x` or `--eg` option and a peg-special (or one of the
-  exceptions mentioned above), show associated examples.
+  With the `-x` or `--eg` option, show examples for
+  specified peg special, or if none, of a randomly chosen one.
 
-  With the `-q` or `--quiz` option, show a quiz question for
-  a specified peg special, or if not specified, a random quiz
-  question.
+  With the `-q` or `--quiz` option, show quiz question for
+  specified peg special, or if none, of a randonly chosen one.
 
   With no arguments, lists all peg specials.
 
-  Be careful to quote shortnames (e.g. *, ->, >, <-) appropriately
-  so the shell doesn't process them in an undesired fashion.
+  Be careful to quote shortnames (e.g. *, ->, >, <-, etc.)
+  appropriately so the shell doesn't process them in an undesired
+  fashion.
   ``)
 
 (defn all-example-file-names
@@ -77,6 +77,7 @@
   (def [opts rest]
     (av/parse-argv argv))
 
+  # usage
   (when (opts :help)
     (print usage)
     (os/exit 0))
@@ -85,7 +86,7 @@
   (when (comp/maybe-handle-dump-completion opts)
     (os/exit 0))
 
-  # show all special names including aliases (and string, integer, struct)
+  # help completion by showing a raw list of relevant names
   (when (opts :raw-all)
     (def file-names
       (try
@@ -100,41 +101,18 @@
     (dump/all-names file-names)
     (os/exit 0))
 
-  (when (or (opts :doc) (opts :eg))
-    (when (empty? rest)
-      (eprint "Need one non-option argument.")
-      (os/exit 1)))
-
-  (def peg-special
+  # check if there was a peg special specified
+  (var peg-special
     (let [cand (first rest)]
       (if-let [alias (get al/alias-table cand)]
         alias
         cand)))
 
-  # no peg-special found, so...
-  (unless peg-special
-    # show random quiz question
-    (when (opts :quiz)
-      (def file-names
-        (try
-          (all-example-file-names)
-          ([e]
-            (eprint "Problem determining all names.")
-            (eprint e)
-            nil)))
-      (unless file-names
-        (eprintf "Failed to find all names.")
-        (os/exit 1))
-      (def choice
-        (choose-random-special file-names))
-      (def [choice-path _]
-        (module/find (string "pegdoc/examples/" choice)))
-      (unless (os/stat choice-path)
-        (eprintf "Failed to find example file: %s" choice-path)
-        (os/exit 1))
-      (dump/special-quiz (slurp choice-path))
-      (os/exit 0))
-    # or, show info about all specials
+  # if no peg-special found and no options, show info about all specials
+  (when (and (nil? peg-special)
+             (nil? (opts :doc))
+             (nil? (opts :eg))
+             (nil? (opts :quiz)))
     (if-let [[file-path _]
              (module/find "pegdoc/examples/0.all-the-names")]
       (do
@@ -147,7 +125,22 @@
         (eprint "Hmm, something is wrong, failed to find all the names.")
         (os/exit 1))))
 
-  # show docs and/or examples for a peg-special
+  # ensure a peg-special beyond this form by choosing one if needed
+  (unless peg-special
+    (def file-names
+      (try
+        (all-example-file-names)
+        ([e]
+          (eprint "Problem determining all names.")
+          (eprint e)
+          nil)))
+    (unless file-names
+      (eprintf "Failed to find all names.")
+      (os/exit 1))
+    (set peg-special
+      (choose-random-special file-names)))
+
+  # show docs, examples, and/or quizzes for a peg-special
   (let [[file-path _]
         (module/find (string "pegdoc/examples/" peg-special))]
 
