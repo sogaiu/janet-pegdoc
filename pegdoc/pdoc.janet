@@ -4,7 +4,7 @@
 
 (import ./alias :as al)
 (import ./argv :as av)
-(import ./completion :as comp)
+(import ./completion :as compl)
 (import ./dump :as dump)
 
 (def usage
@@ -109,7 +109,7 @@
     (os/exit 0))
 
   # possibly handle dumping completion bits
-  (when (comp/maybe-handle-dump-completion opts)
+  (when (compl/maybe-handle-dump-completion opts)
     (os/exit 0))
 
   # help completion by showing a raw list of relevant names
