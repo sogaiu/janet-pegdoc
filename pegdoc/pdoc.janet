@@ -73,6 +73,7 @@
   (array/push names "integer")
   (array/push names "string")
   (array/push names "struct")
+  # add aliases
   (each alias (keys al/alias-table)
     (let [name (get al/alias-table alias)]
       (unless (string/has-prefix? "0." name)
