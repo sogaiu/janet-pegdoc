@@ -7,6 +7,6 @@
   :source @["pegdoc"])
 
 (declare-binscript
-  :main "pegdoc/pdoc"
+  :main "pdoc"
   :is-janet true)
 
