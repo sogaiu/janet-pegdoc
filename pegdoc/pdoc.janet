@@ -132,13 +132,16 @@
       (unless (os/stat choice-path)
         (eprintf "Failed to find example file: %s" choice-path)
         (os/exit 1))
-      (dump/special-quiz choice-path)
+      (dump/special-quiz (slurp choice-path))
       (os/exit 0))
     # or, show info about all specials
     (if-let [[file-path _]
              (module/find "pegdoc/examples/0.all-the-names")]
       (do
-        (dump/doc file-path)
+        (unless (os/stat file-path)
+          (eprintf "Failed to find file: %s" file-path)
+          (os/exit 1))
+        (dump/doc (slurp file-path))
         (os/exit 0))
       (do
         (eprint "Hmm, something is wrong, failed to find all the names.")
@@ -157,22 +160,26 @@
                file-path)
       (os/exit 1))
 
+    # XXX: could check for failure here
+    (def content
+      (slurp file-path))
+
     (when (or (and (opts :doc) (opts :eg))
               (and (nil? (opts :doc))
                    (nil? (opts :eg))
                    (nil? (opts :quiz))))
-      (dump/special-doc file-path)
+      (dump/special-doc content)
       (print (string/repeat "#" 68))
-      (dump/special-examples file-path)
+      (dump/special-examples content)
       (os/exit 0))
 
     (when (opts :doc)
-      (dump/special-doc file-path))
+      (dump/special-doc content))
 
     (cond
       (opts :eg)
-      (dump/special-examples file-path)
+      (dump/special-examples content)
       #
       (opts :quiz)
-      (dump/special-quiz file-path))))
+      (dump/special-quiz content))))
 

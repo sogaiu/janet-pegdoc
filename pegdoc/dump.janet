@@ -38,9 +38,7 @@
       (print name))))
 
 (defn doc
-  [file-path]
-  (def content
-    (slurp file-path))
+  [content]
   (def lines
     (string/split "\n" content))
   (when (empty? (array/peek lines))
@@ -87,9 +85,7 @@
   m-lines)
 
 (defn special-examples
-  [file-path]
-  (def content
-    (slurp file-path))
+  [content]
   (def lines
     (string/split "\n" content))
   (def examples-lines
@@ -120,9 +116,7 @@
   m-lines)
 
 (defn special-doc
-  [file-path]
-  (def content
-    (slurp file-path))
+  [content]
   (def lines
     (string/split "\n" content))
   (def doc-lines
@@ -144,9 +138,9 @@
     (print (string/slice line 2))))
 
 (defn special-quiz
-  [file-path]
+  [content]
   (def tests
-    (ex/extract-first-test-set (slurp file-path)))
+    (ex/extract-first-test-set content))
   (let [idx (math/rng-int (math/rng (os/cryptorand 3))
                           (length tests))
         [ques ans] (get tests idx)]
