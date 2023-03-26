@@ -462,12 +462,54 @@
 
   )
 
+# XXX: not perfect, but mostly ok?
+(defn get-indentation
+  [a-zloc]
+  (when-let [left-zloc (j/left a-zloc)]
+    (let [[the-type _ content] (j/node left-zloc)]
+      (when (= :whitespace the-type)
+        # found indentation
+        (when (empty? (string/trim content))
+          # early return
+          (break content)))))
+  # no indentation
+  "")
+
+(comment
+
+  (def src
+    ``
+    (comment
+
+      (def a 1)
+
+      (put @{} :a 2)
+      # =>
+      @{:a 2}
+
+      )
+    ``)
+
+  (def [ti-zloc _ _]
+    (find-test-indicator (-> (l/par src)
+                             j/zip-down
+                             j/down)))
+
+  (get-indentation (find-test-expr ti-zloc))
+  # =>
+  "  "
+
+  )
+
 (defn extract-tests
   [src]
   (def test-zlocs
     (extract-test-zlocs src))
-  (map |[(l/gen (j/node (get $ 0)))
-         (l/gen (j/node (get $ 1)))]
+  (map |(let [[t-zloc e-zloc] $
+              t-indent (get-indentation t-zloc)
+              e-indent (get-indentation e-zloc)]
+          [(string t-indent (l/gen (j/node t-zloc)))
+           (string e-indent (l/gen (j/node e-zloc)))])
        test-zlocs))
 
 # only operate on first comment form
@@ -504,7 +546,11 @@
   [src]
   (def test-zlocs
     (extract-first-test-set-zlocs src))
-  (map |[(l/gen (j/node (get $ 0)))
-         (l/gen (j/node (get $ 1)))]
+  (map |(let [[t-zloc e-zloc] $
+              t-indent (get-indentation t-zloc)
+              e-indent (get-indentation e-zloc)]
+          [(string t-indent (l/gen (j/node t-zloc)))
+           (string e-indent (l/gen (j/node e-zloc)))])
        test-zlocs))
+
 

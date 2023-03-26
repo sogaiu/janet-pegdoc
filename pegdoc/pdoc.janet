@@ -98,6 +98,8 @@
 
 (defn main
   [& argv]
+  (setdyn :pdoc-width 68)
+
   (def [opts rest]
     (av/parse-argv argv))
 
@@ -186,7 +188,7 @@
                    (nil? (opts :eg))
                    (nil? (opts :quiz))))
       (dump/special-doc content)
-      (print (string/repeat "#" 68))
+      (print (string/repeat "#" (dyn :pdoc-width)))
       (dump/special-examples content)
       (os/exit 0))
 

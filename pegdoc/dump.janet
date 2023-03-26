@@ -121,6 +121,20 @@
     #      should only do if starts with 2 or more spaces?
     (print (string/slice line 2))))
 
+(defn get-indent
+  [a-str]
+  (if-let [[indent]
+           (peg/match ~(capture :s+) a-str)]
+    indent
+    ""))
+
+(defn print-dedented
+  [expr-str]
+  (if-let [indent (get-indent expr-str)
+           count (length indent)]
+    (each line (string/split "\n" expr-str)
+      (print (string/slice line count)))))
+
 (defn special-quiz
   [content]
   (def tests
@@ -128,10 +142,14 @@
   (let [idx (math/rng-int (math/rng (os/cryptorand 3))
                           (length tests))
         [ques ans] (get tests idx)]
-    (print-work-around ques)
+    (print-dedented ques)
     (def buf @"")
     (print "# =>")
     (getline "" buf)
     (print)
-    (print "Answer is: " ans)))
+    (print (string/repeat "#" (dyn :pdoc-width)))
+    (print)
+    (print "Answer is: ")
+    (print)
+    (print-dedented ans)))
 
