@@ -4,7 +4,9 @@
 
 (import ./argv :as av)
 (import ./completion :as compl)
-(import ./show :as show)
+(import ./show/doc :as doc)
+(import ./show/examples :as ex)
+(import ./show/questions :as qu)
 (import ./view :as view)
 
 (def usage
@@ -143,7 +145,7 @@
     (unless file-names
       (eprintf "Failed to find all names.")
       (os/exit 1))
-    (show/all-names (all-names file-names))
+    (doc/all-names (all-names file-names))
     (os/exit 0))
 
   # check if there was a peg special specified
@@ -164,7 +166,7 @@
         (unless (os/stat file-path)
           (eprintf "Failed to find file: %s" file-path)
           (os/exit 1))
-        (show/doc (slurp file-path))
+        (doc/doc (slurp file-path))
         (os/exit 0))
       (do
         (eprint "Hmm, something is wrong, failed to find all the names.")
@@ -206,18 +208,18 @@
               (and (nil? (opts :doc))
                    (nil? (opts :eg))
                    (nil? (opts :quiz))))
-      (show/special-doc content)
+      (doc/special-doc content)
       (print (string/repeat "#" (dyn :pdoc-width)))
-      (show/special-examples content)
+      (ex/special-examples content)
       (os/exit 0))
 
     (when (opts :doc)
-      (show/special-doc content))
+      (doc/special-doc content))
 
     (cond
       (opts :eg)
-      (show/special-examples content)
+      (ex/special-examples content)
       #
       (opts :quiz)
-      (show/special-quiz content))))
+      (qu/special-quiz content))))
 
