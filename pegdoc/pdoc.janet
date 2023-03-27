@@ -30,14 +30,14 @@
   constructs.
 
   With the `-d` or `--doc` option, show docs for specified
-  PEG special, or if none specified, of a randomly chosen one.
+  PEG special, or if none specified, for a randomly chosen one.
 
   With the `-x` or `--eg` option, show examples for
-  specified PEG special, or if none specified, of a randomly chosen
+  specified PEG special, or if none specified, for a randomly chosen
   one.
 
   With the `-q` or `--quiz` option, show quiz question for
-  specified PEG special, or if none specified, of a randonly chosen
+  specified PEG special, or if none specified, for a randonly chosen
   one.
 
   With no arguments, lists all PEG specials.
