@@ -2,10 +2,9 @@
 #
 # * depends on structure of files in margaret's examples directory
 
-(import ./alias :as al)
 (import ./argv :as av)
 (import ./completion :as compl)
-(import ./dump :as dump)
+(import ./show :as show)
 (import ./view :as view)
 
 (def usage
@@ -48,6 +47,24 @@
   fashion.
   ``)
 
+(def alias-table
+  {"+" "choice"
+   "*" "sequence"
+   "opt" "between"
+   "?" "between"
+   "!" "not"
+   ">" "look"
+   "<-" "capture"
+   "quote" "capture"
+   "/" "replace"
+   "$" "position"
+   "%" "accumulate"
+   "->" "backref"
+   #
+   "integer" "0.integer"
+   "string" "0.string"
+   "struct" "0.struct"})
+
 (defn all-example-file-names
   []
   (let [[file-path _]
@@ -75,8 +92,8 @@
   (array/push names "string")
   (array/push names "struct")
   # add aliases
-  (each alias (keys al/alias-table)
-    (let [name (get al/alias-table alias)]
+  (each alias (keys alias-table)
+    (let [name (get alias-table alias)]
       (unless (string/has-prefix? "0." name)
         (when (index-of name names)
           (array/push names alias)))))
@@ -126,13 +143,13 @@
     (unless file-names
       (eprintf "Failed to find all names.")
       (os/exit 1))
-    (dump/all-names (all-names file-names))
+    (show/all-names (all-names file-names))
     (os/exit 0))
 
   # check if there was a peg special specified
   (var peg-special
     (let [cand (first rest)]
-      (if-let [alias (get al/alias-table cand)]
+      (if-let [alias (get alias-table cand)]
         alias
         cand)))
 
@@ -147,7 +164,7 @@
         (unless (os/stat file-path)
           (eprintf "Failed to find file: %s" file-path)
           (os/exit 1))
-        (dump/doc (slurp file-path))
+        (show/doc (slurp file-path))
         (os/exit 0))
       (do
         (eprint "Hmm, something is wrong, failed to find all the names.")
@@ -189,18 +206,18 @@
               (and (nil? (opts :doc))
                    (nil? (opts :eg))
                    (nil? (opts :quiz))))
-      (dump/special-doc content)
+      (show/special-doc content)
       (print (string/repeat "#" (dyn :pdoc-width)))
-      (dump/special-examples content)
+      (show/special-examples content)
       (os/exit 0))
 
     (when (opts :doc)
-      (dump/special-doc content))
+      (show/special-doc content))
 
     (cond
       (opts :eg)
-      (dump/special-examples content)
+      (show/special-examples content)
       #
       (opts :quiz)
-      (dump/special-quiz content))))
+      (show/special-quiz content))))
 

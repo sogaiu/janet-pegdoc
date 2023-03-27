@@ -270,7 +270,7 @@
 
   )
 
-(defn highlight
+(defn colorize
   [src]
   (gen (par src)))
 
@@ -278,11 +278,11 @@
 
   (def src "{:x  :y \n :z  [:a  :b    :c]}")
 
-  (highlight src)
+  (colorize src)
 
   (def src-2 "(peg/match ~(any \"a\") \"abc\")")
 
-  (highlight src-2)
+  (colorize src-2)
 
   )
 

@@ -1,5 +1,5 @@
-(import ./color :as color)
-(import ./theme :as theme)
+(import ./highlight/color :as color)
+(import ./highlight/theme :as theme)
 
 (defn configure
   []

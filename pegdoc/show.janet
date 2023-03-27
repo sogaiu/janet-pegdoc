@@ -1,5 +1,5 @@
-(import ./extract :as ex)
-(import ./highlight :as hl)
+(import ./parse/extract :as ex)
+(import ./highlight/highlight :as hl)
 
 # XXX: not sure if this quoting will work on windows...
 (defn escape
@@ -76,7 +76,7 @@
   (def examples-lines
     (massage-lines-for-examples lines))
   (-> (string/join examples-lines "\n")
-      hl/highlight
+      hl/colorize
       print))
 
 # assumes example file has certain structure
@@ -131,7 +131,7 @@
   (let [idx (math/rng-int (math/rng (os/cryptorand 3))
                           (length tests))
         [ques ans] (get tests idx)]
-    (print-dedented (hl/highlight ques))
+    (print-dedented (hl/colorize ques))
     (def buf @"")
     (print "# =>")
     (getline "" buf)
@@ -140,5 +140,5 @@
     (print)
     (print "Answer is: ")
     (print)
-    (print-dedented (hl/highlight ans))))
+    (print-dedented (hl/colorize ans))))
 
