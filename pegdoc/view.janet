@@ -20,7 +20,7 @@
           (setdyn :pdoc-hl-str color/rgb-str)
           (setdyn :pdoc-theme theme/rgb-theme))
         #
-        (or (= "basic" color-level)
+        (or (= "color" color-level)
             (= "16" color-term))
         (do
           (setdyn :pdoc-hl-str color/color-str)

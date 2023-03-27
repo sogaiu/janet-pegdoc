@@ -47,7 +47,7 @@
   fashion.
   ``)
 
-(def alias-table
+(def examples-table
   {"+" "choice"
    "*" "sequence"
    "opt" "between"
@@ -92,8 +92,8 @@
   (array/push names "string")
   (array/push names "struct")
   # add aliases
-  (each alias (keys alias-table)
-    (let [name (get alias-table alias)]
+  (each alias (keys examples-table)
+    (let [name (get examples-table alias)]
       (unless (string/has-prefix? "0." name)
         (when (index-of name names)
           (array/push names alias)))))
@@ -149,7 +149,7 @@
   # check if there was a peg special specified
   (var peg-special
     (let [cand (first rest)]
-      (if-let [alias (get alias-table cand)]
+      (if-let [alias (get examples-table cand)]
         alias
         cand)))
 
