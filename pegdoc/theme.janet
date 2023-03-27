@@ -1,19 +1,19 @@
-(import ./color :as clr)
+(import ./color :as color)
 
 (defn rgb-theme
   [node-type]
   (cond
     (= :symbol node-type)
-    clr/chartreuse
+    color/chartreuse
     #
     (= :keyword node-type)
-    clr/magenta
+    color/magenta
     #
     (= :string node-type)
-    clr/yellow
+    color/yellow
     #
     (= :number node-type)
-    clr/cyan
+    color/cyan
     #
     [nil nil nil]))
 
