@@ -1,4 +1,5 @@
 (import ./extract :as ex)
+(import ./highlight :as hl)
 
 # XXX: not sure if this quoting will work on windows...
 (defn escape
@@ -74,8 +75,9 @@
     (string/split "\n" content))
   (def examples-lines
     (massage-lines-for-examples lines))
-  (each line examples-lines
-    (print line)))
+  (-> (string/join examples-lines "\n")
+      hl/highlight
+      print))
 
 # assumes example file has certain structure
 (defn massage-lines-for-doc
@@ -108,19 +110,6 @@
   (each line doc-lines
     (print line)))
 
-# XXX: see extract.janet comment for reason for
-#      odd indentation
-(defn print-work-around
-  [extracted]
-  (def lines
-    (string/split "\n" extracted))
-  (print (get lines 0))
-  (array/remove lines 0)
-  (each line lines
-    # XXX: could this be wrong sometimes?
-    #      should only do if starts with 2 or more spaces?
-    (print (string/slice line 2))))
-
 (defn get-indent
   [a-str]
   (if-let [[indent]
@@ -142,7 +131,7 @@
   (let [idx (math/rng-int (math/rng (os/cryptorand 3))
                           (length tests))
         [ques ans] (get tests idx)]
-    (print-dedented ques)
+    (print-dedented (hl/highlight ques))
     (def buf @"")
     (print "# =>")
     (getline "" buf)
@@ -151,5 +140,5 @@
     (print)
     (print "Answer is: ")
     (print)
-    (print-dedented ans)))
+    (print-dedented (hl/highlight ans))))
 

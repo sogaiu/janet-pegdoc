@@ -6,6 +6,7 @@
 (import ./argv :as av)
 (import ./completion :as compl)
 (import ./dump :as dump)
+(import ./view :as view)
 
 (def usage
   ``
@@ -99,7 +100,7 @@
 
 (defn main
   [& argv]
-  (setdyn :pdoc-width 68)
+  (view/configure)
 
   (def [opts rest]
     (av/parse-argv argv))
