@@ -210,7 +210,9 @@
                    (nil? (opts :eg))
                    (nil? (opts :quiz))))
       (doc/special-doc content)
-      (print (string/repeat "#" (dyn :pdoc-width)))
+      ((dyn :pdoc-hl-prin) (string/repeat "#" (dyn :pdoc-width))
+                           (dyn :pdoc-separator-color))
+      (print)
       (ex/special-examples content)
       (os/exit 0))
 

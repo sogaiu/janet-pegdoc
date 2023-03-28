@@ -1,5 +1,7 @@
 (import ./grammar :prefix "")
 (import ./color :prefix "")
+(import ./mono :prefix "")
+(import ./rgb :prefix "")
 (import ./theme :prefix "")
 
 (def jg-capture-ast
@@ -116,39 +118,39 @@
     :buffer
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :buffer)))
+                              ((dyn :pdoc-theme mono-theme) :buffer)))
     :comment
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :comment)))
+                              ((dyn :pdoc-theme mono-theme) :comment)))
     :constant
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :constant)))
+                              ((dyn :pdoc-theme mono-theme) :constant)))
     :keyword
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :keyword)))
+                              ((dyn :pdoc-theme mono-theme) :keyword)))
     :long-buffer
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :long-buffer)))
+                              ((dyn :pdoc-theme mono-theme) :long-buffer)))
     :long-string
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :long-string)))
+                              ((dyn :pdoc-theme mono-theme) :long-string)))
     :number
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :number)))
+                              ((dyn :pdoc-theme mono-theme) :number)))
     :string
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :string)))
+                              ((dyn :pdoc-theme mono-theme) :string)))
     :symbol
     (buffer/push-string buf ((dyn :pdoc-hl-str mono-str)
                               (in an-ast 1)
-                              ;((dyn :pdoc-theme mono-theme) :symbol)))
+                              ((dyn :pdoc-theme mono-theme) :symbol)))
     :whitespace
     (buffer/push-string buf (in an-ast 1))
     #

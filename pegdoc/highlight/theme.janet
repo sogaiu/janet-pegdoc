@@ -1,10 +1,29 @@
 (import ./color :as color)
+(import ./mono :as mono)
+(import ./rgb :as rgb)
 
 (defn rgb-theme
   [node-type]
   (cond
     (= :symbol node-type)
-    color/chartreuse
+    rgb/chartreuse
+    #
+    (= :keyword node-type)
+    rgb/magenta
+    #
+    (= :string node-type)
+    rgb/yellow
+    #
+    (= :number node-type)
+    rgb/cyan
+    #
+    rgb/none))
+
+(defn color-theme
+  [node-type]
+  (cond
+    (= :symbol node-type)
+    color/green
     #
     (= :keyword node-type)
     color/magenta
@@ -15,26 +34,9 @@
     (= :number node-type)
     color/cyan
     #
-    [nil nil nil]))
-
-(defn color-theme
-  [node-type]
-  (cond
-    (= :symbol node-type)
-    [:green]
-    #
-    (= :keyword node-type)
-    [:magenta]
-    #
-    (= :string node-type)
-    [:yellow]
-    #
-    (= :number node-type)
-    [:cyan]
-    #
-    [nil]))
+    color/none))
 
 (defn mono-theme
   [_]
-  [nil])
+  mono/none)
 
