@@ -501,15 +501,17 @@
 
   )
 
+(defn indent-node-gen
+  [a-zloc]
+  (string (get-indentation a-zloc) (l/gen (j/node a-zloc))))
+
 (defn extract-tests
   [src]
   (def test-zlocs
     (extract-test-zlocs src))
-  (map |(let [[t-zloc e-zloc] $
-              t-indent (get-indentation t-zloc)
-              e-indent (get-indentation e-zloc)]
-          [(string t-indent (l/gen (j/node t-zloc)))
-           (string e-indent (l/gen (j/node e-zloc)))])
+  (map |(let [[t-zloc e-zloc] $]
+          [(indent-node-gen t-zloc)
+           (indent-node-gen e-zloc)])
        test-zlocs))
 
 # only operate on first comment form
@@ -546,11 +548,8 @@
   [src]
   (def test-zlocs
     (extract-first-test-set-zlocs src))
-  (map |(let [[t-zloc e-zloc] $
-              t-indent (get-indentation t-zloc)
-              e-indent (get-indentation e-zloc)]
-          [(string t-indent (l/gen (j/node t-zloc)))
-           (string e-indent (l/gen (j/node e-zloc)))])
+  (map |(let [[t-zloc e-zloc] $]
+          [(indent-node-gen t-zloc)
+           (indent-node-gen e-zloc)])
        test-zlocs))
-
 

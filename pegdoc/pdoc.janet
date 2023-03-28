@@ -4,6 +4,7 @@
 
 (import ./argv :as av)
 (import ./completion :as compl)
+(import ./random :as rnd)
 (import ./show/doc :as doc)
 (import ./show/examples :as ex)
 (import ./show/questions :as qu)
@@ -104,21 +105,21 @@
 
 (defn choose-random-special
   [file-names]
-  (let [idx (math/rng-int (math/rng (os/cryptorand 3))
-                          (dec (length file-names)))
-        all-idx (index-of "0.all-the-names.janet" file-names)]
+  (let [all-idx (index-of "0.all-the-names.janet" file-names)]
     (unless all-idx
       (errorf "Unexpected failure to find file with all the names: %M"
               file-names))
     (def file-name
-      (get (array/remove file-names all-idx)
-           idx))
+      (rnd/choose (array/remove file-names all-idx)))
     # return name without extension
     (string/slice file-name 0
                   (last (string/find-all "." file-name)))))
 
 (defn main
   [& argv]
+  (setdyn :pdoc-rng
+          (math/rng (os/cryptorand 8)))
+
   (view/configure)
 
   (def [opts rest]
