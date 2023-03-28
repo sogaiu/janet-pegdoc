@@ -1,5 +1,5 @@
-(import ./grammar :prefix "")
 (import ./color :prefix "")
+(import ./grammar :prefix "")
 (import ./mono :prefix "")
 (import ./rgb :prefix "")
 (import ./theme :prefix "")
