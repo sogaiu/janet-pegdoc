@@ -8,10 +8,16 @@ specials](https://janet-lang.org/docs/peg.html).
 Ask for a quiz question.
 
 ```
-$ pdoc --quiz range
-(peg/match ~(range "aa")
-           "a")
+$ pdoc --quiz replace
+(peg/match ~(replace (sequence (capture "ca")
+                               (_______ "t"))
+                     ,(fn [one two]
+                        (string one two "alog")))
+           "cat")
 # =>
+@["catalog"]
+
+What value could work in the blank? 
 ```
 
 Show doc and examples for a peg special.
