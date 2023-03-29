@@ -35,10 +35,10 @@
                          (dyn :pdoc-separator-color))
     (print)
     (print)
-    (def trimmed-ans
+    (def trimmed-resp
       (string/trim buf))
     # XXX: loop to get a non-empty answer?
-    (when (empty? trimmed-ans)
+    (when (empty? trimmed-resp)
       (print "Had enough?  Perhaps on another occasion then.")
       (break nil))
     (print "My answer is:")
@@ -47,10 +47,10 @@
     (print)
     (print "Your answer is:")
     (print)
-    (print-nicely trimmed-ans)
+    (print-nicely trimmed-resp)
     (print)
     # XXX: why is this trimming necessary?
-    (when (deep= (string/trim ans) trimmed-ans)
+    (when (deep= (string/trim ans) trimmed-resp)
         (print "Yay, our answers agree :)")
         (break true))
     (print "Sorry, I don't think your answer is correct.")
@@ -85,10 +85,10 @@
                            (dyn :pdoc-separator-color))
       (print)
       (print)
-      (def trimmed-ans
+      (def trimmed-resp
         (string/trim buf))
       # XXX: loop to get a non-empty answer?
-      (when (empty? trimmed-ans)
+      (when (empty? trimmed-resp)
         (print "Had enough?  Perhaps on another occasion then.")
         (break nil))
       (print "One complete picture is: ")
@@ -101,12 +101,12 @@
       (print)
       (print-nicely blanked-item)
       (print)
-      (when (deep= blanked-item trimmed-ans)
+      (when (deep= blanked-item trimmed-resp)
         (print "Yay, our answers agree :)")
         (break true))
       (print "Your answer is:")
       (print)
-      (print-nicely trimmed-ans)
+      (print-nicely trimmed-resp)
       (print)
       (print "Our answers differ, but perhaps yours works too.")
       (print)
@@ -116,14 +116,15 @@
         # XXX: cheap method -- more accurate would be to use zippers
         (def cand-code
           (string (string/slice blank-ques 0 head-idx)
-                  trimmed-ans
+                  trimmed-resp
                   (string/slice blank-ques (inc tail-idx))))
         (try
           (let [result (eval-string cand-code)
-                evaled-ans (eval-string ans)]
-            (if (deep= result evaled-ans)
+                evaled-resp (eval-string ans)]
+            (if (deep= result evaled-resp)
               (do
-                (printf "Nice, our answers both evaluate to: %M" evaled-ans)
+                (printf "Nice, our answers both evaluate to: %M"
+                        evaled-resp)
                 true)
               (do
                 (printf "Sorry, your answer evaluates to: %M" result)
