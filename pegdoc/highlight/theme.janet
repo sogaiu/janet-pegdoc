@@ -5,6 +5,9 @@
 (defn rgb-theme
   [node-type]
   (cond
+    (= :constant node-type)
+    rgb/magenta
+    #
     (= :symbol node-type)
     rgb/chartreuse
     #
@@ -22,6 +25,9 @@
 (defn color-theme
   [node-type]
   (cond
+    (= :constant node-type)
+    color/magenta
+    #
     (= :symbol node-type)
     color/green
     #
