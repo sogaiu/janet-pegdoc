@@ -1,4 +1,5 @@
 (import ../highlight/highlight :as hl)
+(import ../jandent/indent)
 (import ../parse/question :as qu)
 (import ../parse/tests :as tests)
 (import ../random :as rnd)
@@ -10,12 +11,11 @@
     indent
     ""))
 
-(defn print-dedented
+(defn print-nicely
   [expr-str]
-  (if-let [indent (get-indent expr-str)
-           count (length indent)]
-    (each line (string/split "\n" expr-str)
-      (print (string/slice line count)))))
+  (let [buf (hl/colorize (indent/format expr-str))]
+    (each line (string/split "\n" buf)
+      (print line))))
 
 (defn special-plain-quiz
   [content]
@@ -23,7 +23,7 @@
     (tests/extract-first-test-set content))
   # XXX: should check for success
   (let [[ques ans] (rnd/choose tests)]
-    (print-dedented (hl/colorize ques))
+    (print-nicely ques)
     (def buf @"")
     (print "# =>")
     (getline "" buf)
@@ -40,7 +40,7 @@
       (break nil))
     (print "My answer is:")
     (print)
-    (print-dedented (hl/colorize ans))
+    (print-nicely ans)
     (print)
     (print "Your answer is:")
     (print)
@@ -68,9 +68,9 @@
     (let [ques (tests/indent-node-gen ques-zloc)
           blank-ques (tests/indent-node-gen blank-ques-zloc)
           ans (tests/indent-node-gen ans-zloc)]
-      (print-dedented (hl/colorize blank-ques))
+      (print-nicely blank-ques)
       (print "# =>")
-      (print-dedented (hl/colorize ans))
+      (print-nicely ans)
       (print)
       (def buf @"")
       (getline "What value could work in the blank? " buf)
@@ -87,9 +87,9 @@
         (break nil))
       (print "One complete picture is: ")
       (print)
-      (print-dedented (hl/colorize ques))
+      (print-nicely ques)
       (print "# =>")
-      (print-dedented (hl/colorize ans))
+      (print-nicely ans)
       (print)
       (print "So one value that works is: " blanked-item)
       (print)
