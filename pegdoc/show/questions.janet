@@ -61,13 +61,45 @@
                            (dyn :pdoc-separator-color))
       (print)
       (print)
-      (print "One value that works is: " blanked-item)
-      (print)
-      (print "The complete picture would then be: ")
+      (def trimmed-ans
+        (string/trim buf))
+      # XXX: loop to get a non-empty answer?
+      (when (empty? trimmed-ans)
+        (print "Had enough?  Perhaps on another occasion then.")
+        (break nil))
+      (print "One complete picture is: ")
       (print)
       (print-dedented (hl/colorize ques))
       (print "# =>")
-      (print-dedented (hl/colorize ans)))))
+      (print-dedented (hl/colorize ans))
+      (print)
+      (print "So one value that can work is: " blanked-item)
+      (print)
+      (when (deep= blanked-item trimmed-ans)
+        (print "Yay, our answers agree :)")
+        (break true))
+      (print "Our answers differ, but perhaps yours works too.")
+      (let [indeces (string/find-all "_" blank-ques)
+            head-idx (first indeces)
+            tail-idx (last indeces)]
+        # XXX: cheap method -- more accurate would be to use zippers
+        (def cand-code
+          (string (string/slice blank-ques 0 head-idx)
+                  trimmed-ans
+                  (string/slice blank-ques (inc tail-idx))))
+        (try
+          # XXX: this trimming seems weird...
+          (let [result (string/trim (eval-string cand-code))]
+            (if (deep= result ans)
+              (do
+                (printf "Nice, your answer also evaluates to: %M" ans)
+                true)
+              (do
+                (printf "Sorry, your answer evalutes to: %M" ans)
+                false)))
+          ([e]
+            (print "Sorry, failed to evaluate with your answer.")
+            false))))))
 
 (defn special-quiz
   [content]
