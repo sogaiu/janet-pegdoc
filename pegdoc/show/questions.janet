@@ -149,7 +149,7 @@
                     evaled-ans)
             true)
           (do
-            (printf "Sorry, our answers don't evaluate to the same.")
+            (printf "Sorry, our answers evaluate differently.")
             (print)
             (printf "My answer evaluates to: %M" result)
             (print)
