@@ -3,6 +3,8 @@
 Tool for doc lookups, examples, and quizzes of [Janet's PEG
 specials](https://janet-lang.org/docs/peg.html).
 
+![pdoc demo](demo.gif?raw=true "pdoc demo")
+
 ## Usage Examples
 
 Ask for a quiz question.
