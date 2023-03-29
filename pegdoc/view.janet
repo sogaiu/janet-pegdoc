@@ -10,14 +10,15 @@
   (setdyn :pdoc-width 68)
   # color
   (let [color-level (os/getenv "PDOC_COLOR")
+        # XXX: tput colors more portable?
         color-term (os/getenv "COLORTERM")]
     # XXX: not ready for prime time, so insist PDOC_COLOR is
     #      set for anything to happen
     (if color-level
       (cond
         (or (= "rgb" color-level)
-            # XXX: tput colors more portable?
-            (= "truecolor" color-term))
+            #(= "truecolor" color-term)
+            false)
         (do
           (setdyn :pdoc-hl-prin rgb/rgb-prin)
           (setdyn :pdoc-hl-str rgb/rgb-str)
