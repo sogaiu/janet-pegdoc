@@ -118,11 +118,11 @@
                   (string/slice blank-ques (inc tail-idx))))
         (try
           (let [result (eval-string cand-code)
-                evaled-resp (eval-string trimmed-ans)]
-            (if (deep= result evaled-resp)
+                evaled-ans (eval-string trimmed-ans)]
+            (if (deep= result evaled-ans)
               (do
                 (printf "Nice, our answers both evaluate to: %M"
-                        evaled-resp)
+                        evaled-ans)
                 true)
               (do
                 (printf "Sorry, your answer evaluates to: %M" result)
