@@ -322,14 +322,16 @@
         (when (empty? specials)
           # XXX
           (eprint "Failed to find a special")
-          (break nil))
+          (break [nil nil]))
         (each sp specials
           (dprintf (l/gen (j/node sp))))
         (set chosen-special-zloc
              (rnd/choose specials))
         (dprintf "chosen: %s" (l/gen (j/node chosen-special-zloc))))
       #
-      (eprint "Unexpected node-type:" grammar-node-type))
+      (do
+        (eprint "Unexpected node-type:" grammar-node-type)
+        (break [nil nil])))
     # find how many steps away we are from test-zloc's node
     (var curr-zloc chosen-special-zloc)
     # XXX: compare (attrs ...) results instead of gen / node
