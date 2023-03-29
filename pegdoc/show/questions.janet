@@ -73,7 +73,7 @@
       (print "# =>")
       (print-dedented (hl/colorize ans))
       (print)
-      (print "So one value that can work is: " blanked-item)
+      (print "So one value that works is: " blanked-item)
       (print)
       (when (deep= blanked-item trimmed-ans)
         (print "Yay, our answers agree :)")
