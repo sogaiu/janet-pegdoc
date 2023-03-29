@@ -32,9 +32,27 @@
                          (dyn :pdoc-separator-color))
     (print)
     (print)
-    (print "Answer is: ")
+    (def trimmed-ans
+      (string/trim buf))
+    # XXX: loop to get a non-empty answer?
+    (when (empty? trimmed-ans)
+      (print "Had enough?  Perhaps on another occasion then.")
+      (break nil))
+    (print "My answer is:")
     (print)
-    (print-dedented (hl/colorize ans))))
+    (print-dedented (hl/colorize ans))
+    (print)
+    (print "Your answer is:")
+    (print)
+    (print (hl/colorize trimmed-ans))
+    (print)
+    # XXX: why is this trimming necessary?
+    (when (deep= (string/trim ans) trimmed-ans)
+        (print "Yay, our answers agree :)")
+        (break true))
+    (print "Sorry, I don't think your answer is correct.")
+    #
+    false))
 
 (defn special-fill-in-quiz
   [content]
