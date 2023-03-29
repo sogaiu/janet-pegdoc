@@ -58,6 +58,13 @@
       (handle-eval-failure resp e)
       false)))
 
+(defn handle-want-to-quit
+  [buf]
+  (when (empty? (string/trim buf))
+    (print "Had enough?  Perhaps on another occasion then.")
+    #
+    true))
+
 (defn validate-response
   [buf]
   (try
@@ -74,20 +81,15 @@
       (printf "%p" e)
       nil)))
 
-(defn handle-want-to-quit
-  [buf]
-  (when (empty? (string/trim buf))
-    (print "Had enough?  Perhaps on another occasion then.")
-    #
-    true))
-
 (defn special-plain-quiz
   [content]
+  # extract first set of tests from content
   (def tests
     (tests/extract-first-test-set content))
   (when (empty? tests)
     (print "Sorry, didn't find any material to make a quiz from.")
     (break nil))
+  # choose a question and answer pair
   (let [[ques ans] (rnd/choose tests)
         trimmed-ans (string/trim ans)]
     # show the question
@@ -161,11 +163,13 @@
 
 (defn special-fill-in-quiz
   [content]
+  # extract first set of tests from content
   (def test-zloc-pairs
     (tests/extract-first-test-set-zlocs content))
   (when (empty? test-zloc-pairs)
     (print "Sorry, didn't find any material to make a quiz from.")
     (break nil))
+  # choose a question and answer, then make a blanked question
   (let [[ques-zloc ans-zloc] (rnd/choose test-zloc-pairs)
         [blank-ques-zloc blanked-item] (qu/rewrite-test-zloc ques-zloc)]
     # XXX: a cheap work-around...evidence of a deeper issue?
