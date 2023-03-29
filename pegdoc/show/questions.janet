@@ -21,7 +21,10 @@
   [content]
   (def tests
     (tests/extract-first-test-set content))
-  # XXX: should check for success
+  (when (empty? tests)
+    (print "Sorry, didn't find any material to make a quiz from.")
+    (break nil))
+  # XXX: should check for success?
   (let [[ques ans] (rnd/choose tests)]
     (print-nicely ques)
     (def buf @"")
@@ -58,13 +61,16 @@
   [content]
   (def test-zloc-pairs
     (tests/extract-first-test-set-zlocs content))
-  # XXX: should check for success
+  (when (empty? test-zloc-pairs)
+    (print "Sorry, didn't find any material to make a quiz from.")
+    (break nil))
+  # XXX: should check for success?
   (let [[ques-zloc ans-zloc] (rnd/choose test-zloc-pairs)
         [blank-ques-zloc blanked-item] (qu/rewrite-test-zloc ques-zloc)]
     # XXX: a cheap work-around...evidence of a deeper issue?
     (unless blank-ques-zloc
       (print "Sorry, drew a blank...take a deep breath and try again?")
-      (break))
+      (break nil))
     (let [ques (tests/indent-node-gen ques-zloc)
           blank-ques (tests/indent-node-gen blank-ques-zloc)
           ans (tests/indent-node-gen ans-zloc)]
