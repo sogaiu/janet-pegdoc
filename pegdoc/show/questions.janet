@@ -113,17 +113,23 @@
                   trimmed-ans
                   (string/slice blank-ques (inc tail-idx))))
         (try
-          # XXX: this trimming seems weird...
-          (let [result (string/trim (eval-string cand-code))]
-            (if (deep= result ans)
+          (let [result (eval-string cand-code)
+                evaled-ans (eval-string ans)]
+            (if (deep= result evaled-ans)
               (do
-                (printf "Nice, your answer also evaluates to: %M" ans)
+                (printf "Nice, our answers both evaluate to: %M" evaled-ans)
                 true)
               (do
-                (printf "Sorry, your answer evalutes to: %M" ans)
+                (printf "Sorry, your answer evaluates to: %M" result)
                 false)))
           ([e]
-            (print "Sorry, failed to evaluate with your answer.")
+            (print "Sorry, failed to evaluate your answer.")
+            (print)
+            (print "The error I got was: " e)
+            (print)
+            (print "I tried to evaluate the following.")
+            (print)
+            (print-nicely cand-code)
             false))))))
 
 (defn special-quiz
