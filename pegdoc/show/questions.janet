@@ -37,7 +37,6 @@
     (print)
     (def trimmed-resp
       (string/trim buf))
-    # XXX: loop to get a non-empty answer?
     (when (empty? trimmed-resp)
       (print "Had enough?  Perhaps on another occasion then.")
       (break nil))
@@ -87,7 +86,6 @@
       (print)
       (def trimmed-resp
         (string/trim buf))
-      # XXX: loop to get a non-empty answer?
       (when (empty? trimmed-resp)
         (print "Had enough?  Perhaps on another occasion then.")
         (break nil))
