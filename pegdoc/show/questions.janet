@@ -22,6 +22,18 @@
   ((dyn :pdoc-hl-prin) (string/repeat "#" (dyn :pdoc-width))
                        (dyn :pdoc-separator-color)))
 
+(defn handle-eval-failure
+  [resp e]
+  (print "Sorry, failed to evaluate your answer.")
+  (print)
+  (print "The error I got was:")
+  (print)
+  (printf "%p" e)
+  (print)
+  (print "I tried to evaluate the following:")
+  (print)
+  (print resp))
+
 (defn handle-plain-response
   [ans resp]
   (print)
@@ -29,9 +41,6 @@
   (print)
   (print-nicely ans)
   (print)
-  (when (empty? resp)
-    (print "Had enough?  Perhaps on another occasion then.")
-    (break nil))
   (print "Your answer is:")
   (print)
   (print-nicely resp)
@@ -53,15 +62,7 @@
           (printf "Sorry, your answer evaluates to: %M" result)
           false)))
     ([e]
-      (print "Sorry, failed to evaluate your answer.")
-      (print)
-      (print "The error I got was:")
-      (print)
-      (printf "%p" e)
-      (print)
-      (print "I tried to evaluate the following.")
-      (print)
-      (print resp)
+      (handle-eval-failure resp e)
       false)))
 
 (defn validate-response
@@ -80,6 +81,13 @@
       (printf "%p" e)
       nil)))
 
+(defn handle-want-to-quit
+  [buf]
+  (when (empty? (string/trim buf))
+    (print "Had enough?  Perhaps on another occasion then.")
+    #
+    true))
+
 (defn special-plain-quiz
   [content]
   (def tests
@@ -91,10 +99,12 @@
         trimmed-ans (string/trim ans)]
     # show the question
     (print-nicely ques)
-    # ask for an answer
-    (def buf @"")
     (print "# =>")
-    (getline "" buf)
+    # ask for an answer
+    (def buf
+      (getline ""))
+    (when (handle-want-to-quit buf)
+      (break nil))
     # does the response make some sense?
     (def resp
       (validate-response buf))
@@ -110,9 +120,6 @@
 (defn handle-fill-in-response
   [ques blank-ques blanked-item ans resp]
   (print)
-  (when (empty? resp)
-    (print "Had enough?  Perhaps on another occasion then.")
-    (break nil))
   (print "One complete picture is: ")
   (print)
   (print-nicely ques)
@@ -156,15 +163,7 @@
             (printf "Your answer evaluates to: %M" evaled-ans)
             false)))
       ([e]
-        (print "Sorry, failed to evaluate your answer.")
-        (print)
-        (print "The error I got was:")
-        (print)
-        (printf "%p" e)
-        (print)
-        (print "I tried to evaluate the following:")
-        (print)
-        (print resp-code)
+        (handle-eval-failure resp-code e)
         false))))
 
 (defn special-fill-in-quiz
@@ -189,8 +188,10 @@
       (print-nicely trimmed-ans)
       (print)
       # ask for an answer
-      (def buf @"")
-      (getline "What value could work in the blank? " buf)
+      (def buf
+        (getline "What value could work in the blank? "))
+      (when (handle-want-to-quit buf)
+        (break nil))
       # does the response make some sense?
       (def resp
         (validate-response buf))
