@@ -4,13 +4,6 @@
 (import ../parse/tests :as tests)
 (import ../random :as rnd)
 
-(defn get-indent
-  [a-str]
-  (if-let [[indent]
-           (peg/match ~(capture :s+) a-str)]
-    indent
-    ""))
-
 (defn print-nicely
   [expr-str]
   (let [buf (hl/colorize (indent/format expr-str))]
