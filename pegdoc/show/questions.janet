@@ -25,7 +25,8 @@
     (print "Sorry, didn't find any material to make a quiz from.")
     (break nil))
   # XXX: should check for success?
-  (let [[ques ans] (rnd/choose tests)]
+  (let [[ques ans] (rnd/choose tests)
+        trimmed-ans (string/trim ans)]
     (print-nicely ques)
     (def buf @"")
     (print "# =>")
@@ -42,14 +43,13 @@
       (break nil))
     (print "My answer is:")
     (print)
-    (print-nicely ans)
+    (print-nicely trimmed-ans)
     (print)
     (print "Your answer is:")
     (print)
     (print-nicely trimmed-resp)
     (print)
-    # XXX: why is this trimming necessary?
-    (when (deep= (string/trim ans) trimmed-resp)
+    (when (deep= trimmed-ans trimmed-resp)
         (print "Yay, our answers agree :)")
         (break true))
     (print "Sorry, I don't think your answer is correct.")
@@ -72,10 +72,10 @@
       (break nil))
     (let [ques (tests/indent-node-gen ques-zloc)
           blank-ques (tests/indent-node-gen blank-ques-zloc)
-          ans (tests/indent-node-gen ans-zloc)]
+          trimmed-ans (string/trim (tests/indent-node-gen ans-zloc))]
       (print-nicely blank-ques)
       (print "# =>")
-      (print-nicely ans)
+      (print-nicely trimmed-ans)
       (print)
       (def buf @"")
       (getline "What value could work in the blank? " buf)
@@ -93,7 +93,7 @@
       (print)
       (print-nicely ques)
       (print "# =>")
-      (print-nicely ans)
+      (print-nicely trimmed-ans)
       (print)
       (print "So one value that works is:")
       (print)
@@ -118,7 +118,7 @@
                   (string/slice blank-ques (inc tail-idx))))
         (try
           (let [result (eval-string cand-code)
-                evaled-resp (eval-string ans)]
+                evaled-resp (eval-string trimmed-ans)]
             (if (deep= result evaled-resp)
               (do
                 (printf "Nice, our answers both evaluate to: %M"
