@@ -50,11 +50,30 @@
     (print-nicely trimmed-resp)
     (print)
     (when (deep= trimmed-ans trimmed-resp)
-        (print "Yay, our answers agree :)")
-        (break true))
-    (print "Sorry, I don't think your answer is correct.")
-    #
-    false))
+      (print "Yay, our answers agree :)")
+      (break true))
+    (print "Our answers differ, but perhaps yours works too.")
+    (print)
+    (try
+      (let [result (eval-string trimmed-resp)
+            evaled-ans (eval-string trimmed-ans)]
+        (if (deep= result evaled-ans)
+          (do
+            (printf "Nice, our answers both evaluate to: %M"
+                    evaled-ans)
+            true)
+          (do
+            (printf "Sorry, your answer evaluates to: %M" result)
+            false)))
+      ([e]
+        (print "Sorry, failed to evaluate your answer.")
+        (print)
+        (print "The error I got was: " e)
+        (print)
+        (print "I tried to evaluate the following.")
+        (print)
+        (print-nicely trimmed-resp)
+        false))))
 
 (defn special-fill-in-quiz
   [content]
