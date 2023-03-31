@@ -96,26 +96,6 @@
   [peg-special-zloc]
   (def node-type
     (get (j/node peg-special-zloc) 0))
-  (cond
-    (or (= :symbol node-type)
-        (= :constant node-type)
-        (= :number node-type)
-        (= :string node-type)
-        (= :long-string node-type)
-        (= :keyword node-type))
-    (j/edit peg-special-zloc
-            |[node-type
-              (get $ 1)
-              (string/repeat "_" (length (get $ 2)))])
-    #
-    (do
-      (eprintf "Unexpected node-type: %s" node-type)
-      peg-special-zloc)))
-
-(defn blank-peg-special
-  [peg-special-zloc]
-  (def node-type
-    (get (j/node peg-special-zloc) 0))
   (var blanked-item nil)
   (var new-peg-special-zloc nil)
   (cond
