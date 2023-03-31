@@ -353,53 +353,52 @@
 
 (comment
 
-  (do
-    (def src
-      ``
-      (try
-        (peg/match ~(error (capture "a"))
-                   "a")
-        ([e] e))
-      ``)
+  (def src
+    ``
+    (try
+      (peg/match ~(error (capture "a"))
+                 "a")
+      ([e] e))
+    ``)
 
-    (def [result blanked-item]
-      (rewrite-test (->> (l/par src)
-                         j/zip-down)))
+  (def [result blanked-item]
+    (rewrite-test (->> (l/par src)
+                       j/zip-down)))
 
-    (or (= "error" blanked-item)
-        (= "\"a\"" blanked-item)
-        (= "capture" blanked-item))
-    # =>
-    true
+  (or (= "error" blanked-item)
+      (= "\"a\"" blanked-item)
+      (= "capture" blanked-item))
+  # =>
+  true
 
-    (or (= result
-           ``
-           (try
-             (peg/match ~(error (_______ "a"))
-                        "a")
-             ([e] e))
-           ``)
-        (= result
-           ``
-           (try
-             (peg/match ~(_____ (capture "a"))
-                        "a")
-             ([e] e))
-           ``)
-        (= result
-           ``
-           (try
-             (peg/match ~(error (capture ___))
-                        "a")
-             ([e] e))
-           ``)
-        (= result
-           ``
-           (try
-             (peg/match ~(error (capture "a"))
-                        ___)
-             ([e] e))
-           ``)))
+  (or (= result
+         ``
+         (try
+           (peg/match ~(error (_______ "a"))
+                      "a")
+           ([e] e))
+         ``)
+      (= result
+         ``
+         (try
+           (peg/match ~(_____ (capture "a"))
+                      "a")
+           ([e] e))
+         ``)
+      (= result
+         ``
+         (try
+           (peg/match ~(error (capture ___))
+                      "a")
+           ([e] e))
+         ``)
+      (= result
+         ``
+         (try
+           (peg/match ~(error (capture "a"))
+                      ___)
+           ([e] e))
+         ``))
   # =>
   true
 
