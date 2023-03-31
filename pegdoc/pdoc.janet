@@ -193,7 +193,7 @@
         (module/find (string "pegdoc/examples/" peg-special))]
 
     (unless file-path
-      (eprintf "Did not find doc for `%s`" peg-special)
+      (eprintf "Did not find file for `%s`" peg-special)
       (os/exit 1))
 
     (unless (os/stat file-path)
