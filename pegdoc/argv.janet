@@ -21,25 +21,21 @@
         (get {"--raw-all" true} arg)
         (put opts :raw-all true)
         #
-        (get {"--doc" true
-              "-d" true}
+        (get {"--doc" true "-d" true}
              arg)
         (put opts :doc true)
         #
-        (get {"--eg" true
-              "-x" true}
+        (get {"--help" true "-h" true}
              arg)
-        (put opts :eg true)
+        (put opts :help true)
         #
-        (get {"--quiz" true
-              "-q" true}
+        (get {"--quiz" true "-q" true}
              arg)
         (put opts :quiz true)
         #
-        (get {"--help" true
-              "-h" true}
+        (get {"--usage" true "-u" true}
              arg)
-        (put opts :help true)
+        (put opts :usage true)
         #
         (array/push rest arg))
       (++ i)))

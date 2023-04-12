@@ -1,11 +1,11 @@
 # janet-pegdoc (pdoc)
 
-Tool for doc lookups, examples, and quizzes of [Janet's PEG
+Tool for doc lookups, usages, and quizzes of [Janet's PEG
 specials](https://janet-lang.org/docs/peg.html).
 
 ![pdoc demo](demo.gif?raw=true "pdoc demo")
 
-## Usage Examples
+## Invocation Examples
 
 Ask for a quiz question.
 
@@ -19,10 +19,10 @@ $ pdoc --quiz replace
 # =>
 @["catalog"]
 
-What value could work in the blank? 
+What value could work in the blank?
 ```
 
-Show doc and examples for a peg special.
+Show doc and usages for a peg special.
 
 ```
 $ pdoc any
@@ -77,10 +77,10 @@ Matches between `min` and `max` (inclusive) repetitions of `patt`
 `(opt patt)` and `(? patt)` are aliases for `(between 0 1 patt)`
 ```
 
-Show just examples for a peg special.
+Show just usages for a peg special.
 
 ```
-$ pdoc -x string
+$ pdoc -u string
 
 (peg/match "cat" "cat")
 # =>
@@ -203,31 +203,31 @@ Usage: pdoc [option] [peg-special]
 
 View Janet PEG information.
 
-  -h, --help                  show this output
+  -h, --help                   show this output
 
-  -d, --doc [<peg-special>]   show doc
-  -x, --eg [<peg-special>]    show examples
-  -q, --quiz [<peg-special>]  show quiz question
+  -d, --doc [<peg-special>]    show doc
+  -q, --quiz [<peg-special>]   show quiz question
+  -u, --usage [<peg-special>]  show usage
 
-  --bash-completion           output bash-completion bits
-  --fish-completion           output fish-completion bits
-  --zsh-completion            output zsh-completion bits
-  --raw-all                   show all names to help completion
+  --bash-completion            output bash-completion bits
+  --fish-completion            output fish-completion bits
+  --zsh-completion             output zsh-completion bits
+  --raw-all                    show all names to help completion
 
-With a peg-special, but no options, show docs and examples.
+With a peg-special, but no options, show docs and usages.
 If any of "integer", "string", or "struct" are specified as the
-"peg-special", show docs and examples about using those as PEG
+"peg-special", show docs and usages about using those as PEG
 constructs.
 
 With the `-d` or `--doc` option, show docs for specified
 PEG special, or if none specified, for a randomly chosen one.
 
-With the `-x` or `--eg` option, show examples for
-specified PEG special, or if none specified, for a randomly chosen
-one.
-
 With the `-q` or `--quiz` option, show quiz question for
 specified PEG special, or if none specified, for a randonly chosen
+one.
+
+With the `-u` or `--usage` option, show usages for
+specified PEG special, or if none specified, for a randomly chosen
 one.
 
 With no arguments, lists all PEG specials.

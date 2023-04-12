@@ -34,7 +34,7 @@
   #
   m-lines)
 
-(defn special-examples
+(defn special-usages
   [content]
   (def lines
     (string/split "\n" content))

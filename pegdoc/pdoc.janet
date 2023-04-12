@@ -6,7 +6,7 @@
 (import ./completion :as compl)
 (import ./random :as rnd)
 (import ./show/doc :as doc)
-(import ./show/examples :as ex)
+(import ./show/usages :as u)
 (import ./show/questions :as qu)
 (import ./view :as view)
 
@@ -16,31 +16,31 @@
 
   View Janet PEG information.
 
-    -h, --help                  show this output
+    -h, --help                   show this output
 
-    -d, --doc [<peg-special>]   show doc
-    -x, --eg [<peg-special>]    show examples
-    -q, --quiz [<peg-special>]  show quiz question
+    -d, --doc [<peg-special>]    show doc
+    -q, --quiz [<peg-special>]   show quiz question
+    -u, --usage [<peg-special>]  show usage
 
-    --bash-completion           output bash-completion bits
-    --fish-completion           output fish-completion bits
-    --zsh-completion            output zsh-completion bits
-    --raw-all                   show all names to help completion
+    --bash-completion            output bash-completion bits
+    --fish-completion            output fish-completion bits
+    --zsh-completion             output zsh-completion bits
+    --raw-all                    show all names to help completion
 
-  With a peg-special, but no options, show docs and examples.
+  With a peg-special, but no options, show docs and usages.
   If any of "integer", "string", or "struct" are specified as the
-  "peg-special", show docs and examples about using those as PEG
+  "peg-special", show docs and usages about using those as PEG
   constructs.
 
   With the `-d` or `--doc` option, show docs for specified
   PEG special, or if none specified, for a randomly chosen one.
 
-  With the `-x` or `--eg` option, show examples for
-  specified PEG special, or if none specified, for a randomly chosen
-  one.
-
   With the `-q` or `--quiz` option, show quiz question for
   specified PEG special, or if none specified, for a randonly chosen
+  one.
+
+  With the `-u` or `--usage` option, show usages for
+  specified PEG special, or if none specified, for a randomly chosen
   one.
 
   With no arguments, lists all PEG specials.
@@ -159,7 +159,7 @@
   # if no peg-special found and no options, show info about all specials
   (when (and (nil? peg-special)
              (nil? (opts :doc))
-             (nil? (opts :eg))
+             (nil? (opts :usage))
              (nil? (opts :quiz)))
     (if-let [[file-path _]
              (module/find "pegdoc/examples/0.all-the-names")]
@@ -188,7 +188,7 @@
     (set peg-special
       (choose-random-special file-names)))
 
-  # show docs, examples, and/or quizzes for a peg-special
+  # show docs, usages, and/or quizzes for a peg-special
   (let [[file-path _]
         (module/find (string "pegdoc/examples/" peg-special))]
 
@@ -205,23 +205,23 @@
     (def content
       (slurp file-path))
 
-    (when (or (and (opts :doc) (opts :eg))
+    (when (or (and (opts :doc) (opts :usage))
               (and (nil? (opts :doc))
-                   (nil? (opts :eg))
+                   (nil? (opts :usage))
                    (nil? (opts :quiz))))
       (doc/special-doc content)
       ((dyn :pdoc-hl-prin) (string/repeat "#" (dyn :pdoc-width))
                            (dyn :pdoc-separator-color))
       (print)
-      (ex/special-examples content)
+      (u/special-usages content)
       (os/exit 0))
 
     (when (opts :doc)
       (doc/special-doc content))
 
     (cond
-      (opts :eg)
-      (ex/special-examples content)
+      (opts :usage)
+      (u/special-usages content)
       #
       (opts :quiz)
       (qu/special-quiz content))))
