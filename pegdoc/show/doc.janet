@@ -21,7 +21,7 @@
       (print (escape name))
       (print name))))
 
-(defn doc
+(defn normal-doc
   [content]
   (def lines
     (string/split "\n" content))

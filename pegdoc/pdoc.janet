@@ -167,7 +167,7 @@
         (unless (os/stat file-path)
           (eprintf "Failed to find file: %s" file-path)
           (os/exit 1))
-        (doc/doc (slurp file-path))
+        (doc/normal-doc (slurp file-path))
         (os/exit 0))
       (do
         (eprint "Hmm, something is wrong, failed to find all the names.")
