@@ -1,5 +1,4 @@
 (import ../highlight/highlight :as hl)
-(import ../termsize :as t)
 
 # XXX: not sure if this quoting will work on windows...
 (defn escape
@@ -63,8 +62,9 @@
     (string/split "\n" content))
   (def doc-lines
     (massage-lines-for-doc lines))
-  # t/cols doesn't seem to work as-is as a value very well
+  # XXX: issue with doc-format?
+  #      width doesn't seem to work as-is as a value very well
   (print (doc-format (string/join doc-lines "\n")
-                     (+ 8 (t/cols))
+                     (+ 8 (dyn :pdoc-width))
                      0)))
 
