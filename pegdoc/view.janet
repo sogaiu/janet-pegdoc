@@ -2,12 +2,12 @@
 (import ./highlight/mono :as mono)
 (import ./highlight/rgb :as rgb)
 (import ./highlight/theme :as theme)
+(import ./termsize :as t)
 
 (defn configure
   []
   # width
-  # XXX: tput cols can give a number for this, but not multi-platform?
-  (setdyn :pdoc-width 68)
+  (setdyn :pdoc-width (t/cols))
   # color
   (let [color-level (os/getenv "PDOC_COLOR")
         # XXX: tput colors more portable?
