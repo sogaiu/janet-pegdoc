@@ -29,9 +29,9 @@
 
   With a peg-special, but no options, show docs and usages.
 
-  If any of "boolean", "integer", "string", or "struct" are
-  specified as the "peg-special", show docs and usages about
-  using those as PEG constructs.
+  If any of "boolean", "integer", "string", "dictionary",
+  "struct", or "table" are specified as the "peg-special",
+  show docs and usages about using those as PEG constructs.
 
   With the `-d` or `--doc` option, show docs for specified
   PEG special, or if none specified, for a randomly chosen one.
@@ -66,9 +66,11 @@
    "->" "backref"
    #
    "boolean" "0.boolean"
+   "dictionary" "0.dictionary"
    "integer" "0.integer"
    "string" "0.string"
-   "struct" "0.struct"})
+   "struct" "0.dictionary"
+   "table" "0.dictionary"})
 
 (defn all-example-file-names
   []
@@ -94,9 +96,11 @@
          (filter |(not (string/has-prefix? "0." $)))))
   # add things with no names
   (array/push names "boolean")
+  (array/push names "dictionary")
   (array/push names "integer")
   (array/push names "string")
   (array/push names "struct")
+  (array/push names "table")
   # add aliases
   (each alias (keys examples-table)
     (let [name (get examples-table alias)]
@@ -157,7 +161,20 @@
     (let [cand (first rest)]
       (if-let [alias (get examples-table cand)]
         alias
-        cand)))
+        (let [the-type
+              (type (try (parse cand) ([e] nil)))]
+          (cond
+            (= :boolean the-type)
+            "0.boolean"
+            #
+            (or (= :struct the-type)
+                (= :table the-type))
+            "0.struct"
+            #
+            (try (scan-number cand) ([e] nil))
+            "0.integer"
+            #
+            cand)))))
 
   # if no peg-special found and no options, show info about all specials
   (when (and (nil? peg-special)

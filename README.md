@@ -208,9 +208,9 @@ View Janet PEG information.
 
 With a peg-special, but no options, show docs and usages.
 
-If any of "boolean", "integer", "string", or "struct" are
-specified as the "peg-special", show docs and usages about
-using those as PEG constructs.
+If any of "boolean", "integer", "string", "dictionary",
+"struct", or "table" are specified as the "peg-special",
+show docs and usages about using those as PEG constructs.
 
 With the `-d` or `--doc` option, show docs for specified
 PEG special, or if none specified, for a randomly chosen one.

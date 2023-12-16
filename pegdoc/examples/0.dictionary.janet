@@ -1,18 +1,25 @@
 (import ../margaret/meg :as peg)
 
-# `{:main <rule> ...}` -- where <rule> is a peg (see below for ...)
+# `{:main <rule> ...}`
 
-# The feature that makes PEGs so much more powerful than pattern matching
-# solutions like (vanilla) regex is mutual recursion.
+# or
 
-# To do recursion in a PEG, you can wrap multiple patterns in a grammar,
-# which is a Janet struct.
+# `@{:main <rule> ...}`
 
-# The patterns must be named by keywords, which can then be used in all
-# sub-patterns in the grammar.
+# where <rule> is a peg (see below for ...)
 
-# Each grammar, defined by a struct, must also have a main rule, called
-# `:main`, that is the pattern that the entire grammar is defined by.
+# The feature that makes PEGs so much more powerful than pattern
+# matching solutions like (vanilla) regex is mutual recursion.
+
+# To do recursion in a PEG, you can wrap multiple patterns in a
+# grammar, which is a Janet dictionary (i.e. a struct or a table).
+
+# The patterns must be named by keywords, which can then be used in
+# all sub-patterns in the grammar.
+
+# Each grammar, defined by a dictionary, must also have a main rule,
+# called `:main`, that is the pattern that the entire grammar is
+# defined by.
 
 (comment
 
