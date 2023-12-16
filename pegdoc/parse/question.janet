@@ -23,7 +23,7 @@
 #
 #      * integer (handled in find-peg-specials)
 #      * keyword (handled in find-peg-specials)
-#      * string, long-string (handled in find-peg-specials)
+#      * string long-string (handled in find-peg-specials)
 #      * constant (handled in find-peg-specials)
 #      * other?
 (defn is-peg-special?
