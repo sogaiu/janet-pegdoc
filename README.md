@@ -3,24 +3,7 @@
 Tool for doc lookups, usages, and quizzes of [Janet's PEG
 specials](https://janet-lang.org/docs/peg.html).
 
-![pdoc demo](demo.gif?raw=true "pdoc demo")
-
 ## Invocation Examples
-
-Ask for a quiz question.
-
-```
-$ pdoc --quiz replace
-(peg/match ~(replace (sequence (capture "ca")
-                               (_______ "t"))
-                     ,(fn [one two]
-                        (string one two "alog")))
-           "cat")
-# =>
-@["catalog"]
-
-What value could work in the blank?
-```
 
 Show doc and usages for a peg special.
 
@@ -65,42 +48,40 @@ If the end of the input is reached and `patt` is not matched, the entire
 pattern does not match.
 ```
 
-Show just doc for a peg special via an alias.
-
-```
-$ pdoc -d ?
-
-`(between min max patt)`
-
-Matches between `min` and `max` (inclusive) repetitions of `patt`
-
-`(opt patt)` and `(? patt)` are aliases for `(between 0 1 patt)`
-```
-
 Show just usages for a peg special.
 
 ```
-$ pdoc -u string
+$ pdoc -u if
 
-(peg/match "cat" "cat")
+(peg/match ~(if 1 "a")
+           "a")
 # =>
 @[]
 
-(peg/match "cat" "cat1")
+(peg/match ~(if 5 (set "eilms"))
+           "smile")
 # =>
 @[]
 
-(peg/match "" "")
-# =>
-@[]
-
-(peg/match "" "a")
-# =>
-@[]
-
-(peg/match "cat" "dog")
+(peg/match ~(if 5 (set "eilms"))
+           "wink")
 # =>
 nil
+```
+
+Ask for a quiz question.
+
+```
+$ pdoc --quiz replace
+(peg/match ~(replace (sequence (capture "ca")
+                               (_______ "t"))
+                     ,(fn [one two]
+                        (string one two "alog")))
+           "cat")
+# =>
+@["catalog"]
+
+What value could work in the blank?
 ```
 
 Show all peg specials.
