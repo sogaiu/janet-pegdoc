@@ -28,9 +28,10 @@
     --raw-all                    show all names for completion
 
   With a peg-special, but no options, show docs and usages.
-  If any of "integer", "string", or "struct" are specified as
-  the "peg-special", show docs and usages about using those as
-  PEG constructs.
+
+  If any of "boolean", "integer", "string", or "struct" are
+  specified as the "peg-special", show docs and usages about
+  using those as PEG constructs.
 
   With the `-d` or `--doc` option, show docs for specified
   PEG special, or if none specified, for a randomly chosen one.
@@ -64,6 +65,7 @@
    "%" "accumulate"
    "->" "backref"
    #
+   "boolean" "0.boolean"
    "integer" "0.integer"
    "string" "0.string"
    "struct" "0.struct"})
@@ -91,6 +93,7 @@
          # only keep things that have names
          (filter |(not (string/has-prefix? "0." $)))))
   # add things with no names
+  (array/push names "boolean")
   (array/push names "integer")
   (array/push names "string")
   (array/push names "struct")

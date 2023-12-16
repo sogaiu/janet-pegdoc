@@ -4,6 +4,7 @@
 #   Range Patterns
 #   Set Patterns
 #   String Patterns
+#   Boolean Patterns
 #
 # Combining Patterns
 #   any
