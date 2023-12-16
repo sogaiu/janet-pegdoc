@@ -29,7 +29,7 @@
 
   With a peg-special, but no options, show docs and usages.
 
-  If any of "boolean", "integer", "string", "dictionary",
+  If any of "boolean", "dictionary", "integer", "string",
   "struct", or "table" are specified as the "peg-special",
   show docs and usages about using those as PEG constructs.
 

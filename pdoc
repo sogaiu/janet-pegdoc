@@ -1,5 +1,5 @@
-(import pegdoc/pdoc)
+(import pegdoc/main)
 
 (defn main
   [& argv]
-  (pdoc/main ;argv))
+  (main/main ;argv))
