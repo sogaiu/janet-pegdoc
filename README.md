@@ -113,6 +113,7 @@ Primitive Patterns
   Range Patterns
   Set Patterns
   String Patterns
+  Boolean Patterns
 
 Combining Patterns
   any
@@ -225,26 +226,27 @@ View Janet PEG information.
   --raw-all                    show all names to help completion
 
 With a peg-special, but no options, show docs and usages.
-If any of "integer", "string", or "struct" are specified as the
-"peg-special", show docs and usages about using those as PEG
-constructs.
+
+If any of "boolean", "integer", "string", or "struct" are
+specified as the "peg-special", show docs and usages about
+using those as PEG constructs.
 
 With the `-d` or `--doc` option, show docs for specified
 PEG special, or if none specified, for a randomly chosen one.
 
 With the `-q` or `--quiz` option, show quiz question for
-specified PEG special, or if none specified, for a randonly chosen
-one.
+specified PEG special, or if none specified, for a randonly
+chosen one.
 
 With the `-u` or `--usage` option, show usages for
-specified PEG special, or if none specified, for a randomly chosen
-one.
+specified PEG special, or if none specified, for a randomly
+chosen one.
 
 With no arguments, lists all PEG specials.
 
 Be careful to quote shortnames (e.g. *, ->, >, <-, etc.)
-appropriately so the shell doesn't process them in an undesired
-fashion.
+appropriately so the shell doesn't process them in an
+undesired fashion.
 ```
 
 ## Credits
