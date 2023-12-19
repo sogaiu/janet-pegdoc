@@ -250,13 +250,12 @@ pdoc thru -d
 This was done so that quick editing of a previous command would be
 more convenient for different uses.
 
-If you were interested in a particular PEG special, may be you'd
-prefer to be invoking `pdoc <peg-special> -d` followed by
-`pdoc <peg-special> -u`, and then may be even `pdoc <peg-special> -q`
-for a quiz question.
+If interested in a particular PEG special, may be you'd prefer to be
+invoking `pdoc <peg-special> -d` followed by `pdoc <peg-special> -u`,
+and then may be even `pdoc <peg-special> -q` for a quiz question.
 
-Instead, if you were interested in seeing usages for different PEG
-specials, may be you'd prefer to be invoking `pdoc -u int` followed by
+Instead, if interested in seeing usages for different PEG specials,
+may be you'd prefer to be invoking `pdoc -u int` followed by
 `pdoc -u int-be` or `pdoc -u uint`.
 
 ### Shell Completion
