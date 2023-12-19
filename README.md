@@ -3,6 +3,24 @@
 Tool for doc lookups, usages, and quizzes of [Janet's PEG
 specials](https://janet-lang.org/docs/peg.html).
 
+## Installation
+
+Quick:
+
+```
+jpm install https://github.com/sogaiu/janet-pegdoc
+```
+Manual:
+
+```
+git clone https://github.com/sogaiu/janet-pegdoc
+cd janet-pegdoc
+jpm install
+```
+
+In either case, success should lead to the command `pdoc` being
+available on `PATH`.
+
 ## Invocation Examples
 
 Show doc and usages for a peg special.
