@@ -35,7 +35,7 @@ Matches 0 or more repetitions of `patt`
 @["aa"]
 ```
 
-Show just doc for the peg special `to` [1].
+Show just doc for the peg special `to`.
 
 ```
 $ pdoc -d to
@@ -230,6 +230,64 @@ appropriately so the shell doesn't process them in an
 undesired fashion.
 ```
 
+## Conveniences
+
+### Flexible Option Position
+
+As a convenience feature, options (e.g. `-u` or `-d`) can be specified
+before or after a PEG special, e.g. invoking:
+
+```
+pdoc -d thru
+```
+
+should yield the same result as:
+
+```
+pdoc thru -d
+```
+
+This was done so that quick editing of a previous command would be
+more convenient for different uses.
+
+If you were interested in a particular PEG special, may be you'd
+prefer to be invoking `pdoc <peg-special> -d` followed by
+`pdoc <peg-special> -u`, and then may be even `pdoc <peg-special> -q`
+for a quiz question.
+
+Instead, if you were interested in seeing usages for different PEG
+specials, may be you'd prefer to be invoking `pdoc -u int` followed by
+`pdoc -u int-be` or `pdoc -u uint`.
+
+### Shell Completion
+
+The PEG special argument to `pdoc` can be completed if using the bash
+/ fish / zsh shells with appropriate configuration.
+
+So for example, pressing `TAB` after entering `pdoc a` might yield the
+output:
+
+```
+accumulate  any         argument    at-least    at-most
+```
+
+To set this up, invoke `pdoc` with one of the following for the
+relevant shell:
+
+* `--bash-completion`
+* `--fish-completion`
+* `--zsh-completion`
+
+Put the resulting output in a location appropriate for the shell in
+use.
+
+Below are some hints about where such locations might be:
+
+* [bash](https://github.com/scop/bash-completion/blob/master/README.md#faq) --
+  look for `Where should I install my own local completions?`
+* [fish](https://fishshell.com/docs/current/completions.html#where-to-put-completions)
+* [zsh](https://zsh.sourceforge.io/Doc/Release/Completion-System.html) -- good luck :P
+
 ## Credits
 
 Portions of tests and the documentation come from Janet and the
@@ -257,31 +315,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
-
-## Footnotes
-
-[1] As a convenience feature, options (e.g. `-u` or `-d`) can be
-specified before or after a PEG special, e.g. invoking:
-
-```
-pdoc -d thru
-```
-
-should yield the same result as:
-
-```
-pdoc thru -d
-```
-
-This was done so that quick editing of a previous command would be
-more convenient for different uses.
-
-If you were interested in a particular PEG special, may be you'd
-prefer to be invoking `pdoc <peg-special> -d` followed by
-`pdoc <peg-special> -u`, and then may be even `pdoc <peg-special> -q`
-for a quiz question.
-
-Instead, if you were interested in seeing usages for different PEG
-specials, may be you'd prefer to be invoking `pdoc -u int` followed by
-`pdoc -u int-be` or `pdoc -u uint`.
