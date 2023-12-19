@@ -108,11 +108,11 @@ Show all peg specials.
 $ pdoc
 
 Primitive Patterns
+  Boolean Patterns
   Integer Patterns
   Range Patterns
   Set Patterns
   String Patterns
-  Boolean Patterns
 
 Combining Patterns
   any
