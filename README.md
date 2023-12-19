@@ -35,7 +35,7 @@ Matches 0 or more repetitions of `patt`
 @["aa"]
 ```
 
-Show just doc for the peg special `to`.
+Show just doc for the peg special `to` [1].
 
 ```
 $ pdoc -d to
@@ -257,3 +257,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+
+## Footnotes
+
+[1] As a convenience feature, options (e.g. `-u` or `-d`) can be
+specified before or after a PEG special, e.g. invoking:
+
+```
+pdoc -d thru
+```
+
+should yield the same result as:
+
+```
+pdoc thru -d
+```
+
+This was done so that quick editing of a previous command would be
+more convenient for different uses.
+
+If you were interested in a particular PEG special, may be you'd
+prefer to be invoking `pdoc <peg-special> -d` followed by
+`pdoc <peg-special> -u`, and then may be even `pdoc <peg-special> -q`
+for a quiz question.
+
+Instead, if you were interested in seeing usages for different PEG
+specials, may be you'd prefer to be invoking `pdoc -u int` followed by
+`pdoc -u int-be` or `pdoc -u uint`.
