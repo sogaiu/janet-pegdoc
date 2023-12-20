@@ -55,7 +55,7 @@
 (defn choose-random-special
   [file-names]
   (let [all-idx (index-of "0.all-the-names.janet" file-names)]
-    (unless all-idx
+    (when (not all-idx)
       (errorf "Unexpected failure to find file with all the names: %M"
               file-names))
     (def file-name
@@ -92,41 +92,25 @@
           (eprint "Problem determining all names.")
           (eprint e)
           nil)))
-    (unless file-names
+    (when (not file-names)
       (eprintf "Failed to find all names.")
       (os/exit 1))
     (doc/all-names (ex/all-names file-names))
     (os/exit 0))
 
   # check if there was a peg special specified
-  (var peg-special
-    (let [cand (first rest)]
-      (if-let [alias (get ex/examples-table cand)]
-        alias
-        (let [the-type
-              (type (try (parse cand) ([e] nil)))]
-          (cond
-            (= :boolean the-type)
-            "0.boolean"
-            #
-            (or (= :struct the-type)
-                (= :table the-type))
-            "0.struct"
-            #
-            (try (scan-number cand) ([e] nil))
-            "0.integer"
-            #
-            cand)))))
+  (def special-fname
+    (ex/get-filename (first rest)))
 
   # if no peg-special found and no options, show info about all specials
-  (when (and (nil? peg-special)
+  (when (and (nil? special-fname)
              (nil? (opts :doc))
              (nil? (opts :usage))
              (nil? (opts :quiz)))
     (if-let [[file-path _]
              (module/find "pegdoc/examples/0.all-the-names")]
       (do
-        (unless (os/stat file-path)
+        (when (not (os/stat file-path))
           (eprintf "Failed to find file: %s" file-path)
           (os/exit 1))
         (doc/normal-doc (slurp file-path))
@@ -135,56 +119,55 @@
         (eprint "Hmm, something is wrong, failed to find all the names.")
         (os/exit 1))))
 
-  # ensure a peg-special beyond this form by choosing one if needed
-  (unless peg-special
-    (def file-names
-      (try
-        (ex/all-example-file-names)
-        ([e]
-          (eprint "Problem determining all names.")
-          (eprint e)
-          nil)))
-    (unless file-names
-      (eprintf "Failed to find all names.")
-      (os/exit 1))
-    (set peg-special
+  # ensure a special-name beyond this form by choosing one if needed
+  (default special-fname
+    (do
+      (def file-names
+        (try
+          (ex/all-example-file-names)
+          ([e]
+            (eprint "Problem determining all names.")
+            (eprint e)
+            nil)))
+      (when (not file-names)
+        (eprintf "Failed to find all names.")
+        (os/exit 1))
       (choose-random-special file-names)))
 
-  # show docs, usages, and/or quizzes for a peg-special
-  (let [[file-path _]
-        (module/find (string "pegdoc/examples/" peg-special))]
+  # show docs, usages, and/or quizzes for a special-fname
+  (def file-path (ex/get-filepath special-fname))
 
-    (unless file-path
-      (eprintf "Did not find file for `%s`" peg-special)
-      (os/exit 1))
+  (when (not file-path)
+    (eprintf "Did not find file for `%s`" special-fname)
+    (os/exit 1))
 
-    (unless (os/stat file-path)
-      (eprintf "Hmm, something is wrong, failed to find file: %s"
-               file-path)
-      (os/exit 1))
+  (when (not (os/stat file-path))
+    (eprintf "Hmm, something is wrong, failed to find file: %s"
+             file-path)
+    (os/exit 1))
 
-    # XXX: could check for failure here
-    (def content
-      (slurp file-path))
+  # XXX: could check for failure here
+  (def content
+    (slurp file-path))
 
-    (when (or (and (opts :doc) (opts :usage))
-              (and (nil? (opts :doc))
-                   (nil? (opts :usage))
-                   (nil? (opts :quiz))))
-      (doc/special-doc content)
-      ((dyn :pdoc-hl-prin) (string/repeat "#" (dyn :pdoc-width))
-                           (dyn :pdoc-separator-color))
-      (print)
-      (u/special-usages content)
-      (os/exit 0))
+  (when (or (and (opts :doc) (opts :usage))
+            (and (nil? (opts :doc))
+                 (nil? (opts :usage))
+                 (nil? (opts :quiz))))
+    (doc/special-doc content)
+    ((dyn :pdoc-hl-prin) (string/repeat "#" (dyn :pdoc-width))
+                         (dyn :pdoc-separator-color))
+    (print)
+    (u/special-usages content)
+    (os/exit 0))
 
-    (when (opts :doc)
-      (doc/special-doc content))
+  (when (opts :doc)
+    (doc/special-doc content))
 
-    (cond
-      (opts :usage)
-      (u/special-usages content)
-      #
-      (opts :quiz)
-      (qu/special-quiz content))))
+  (cond
+    (opts :usage)
+    (u/special-usages content)
+    #
+    (opts :quiz)
+    (qu/special-quiz content)))
 

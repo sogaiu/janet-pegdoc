@@ -4,28 +4,10 @@
 
 (defn pdoc*
   [&opt sym]
-  # XXX: almost duplicate code in main.janet
   (defn thing-content
     [thing]
-    (def special-fname
-      (if-let [alias (get ex/examples-table thing)]
-        alias
-        (let [the-type
-              (type (try (parse thing) ([e] nil)))]
-          (cond
-            (= :boolean the-type)
-            "0.boolean"
-            #
-            (or (= :struct the-type)
-                (= :table the-type))
-            "0.struct"
-            #
-            (try (scan-number thing) ([e] nil))
-            "0.integer"
-            #
-            thing))))
-    (def [file-path _]
-      (module/find (string "pegdoc/examples/" special-fname)))
+    (def special-fname (ex/get-filename thing))
+    (def file-path (ex/get-filepath special-fname))
     (when (and file-path
                (os/stat file-path))
       # XXX: could check for failure here

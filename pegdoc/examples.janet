@@ -19,6 +19,31 @@
    "struct" "0.dictionary"
    "table" "0.dictionary"})
 
+(defn get-filename
+  [thing]
+  (if-let [alias (get examples-table thing)]
+    alias
+    (let [the-type
+          (type (try (parse thing) ([e] nil)))]
+      (cond
+        (= :boolean the-type)
+        "0.boolean"
+        #
+        (or (= :struct the-type)
+            (= :table the-type))
+        "0.struct"
+        #
+        (try (scan-number thing) ([e] nil))
+        "0.integer"
+        #
+        thing))))
+
+(defn get-filepath
+  [filename]
+  (def [file-path _]
+    (module/find (string "pegdoc/examples/" filename)))
+  file-path)
+
 (defn all-example-file-names
   []
   (let [[file-path _]
