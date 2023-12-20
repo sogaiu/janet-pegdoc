@@ -6,15 +6,20 @@
   [&opt sym]
   (def indent 4)
   (defn print-index
-    []
+    [&opt fltr]
+    (default fltr identity)
     (def atn-table (ex/parse-all-the-names))
     (print)
     (each sname ["Primitive Patterns" "Combining Patterns" "Captures"]
-      (print
-        (doc-format
-          (string sname ":\n\n"
-                  "* " (string/join (get atn-table sname) "\n* "))
-          nil nil false)))
+      (def items (->> (get atn-table sname)
+                      (filter fltr)))
+      (when (not (empty? items))
+        (print
+          (doc-format
+            (string sname ":\n\n"
+                    "* "
+                    (string/join items "\n* "))
+            nil nil false))))
     (print "\n"
            (string/repeat " " indent)
            "Use (pdoc sym) for more information.\n"))
@@ -45,9 +50,9 @@
              (string/repeat " " indent)
              "peg special")
       (print (doc/special-doc content width indent)))
-    # XXX
+    #
     (string? sym)
-    (print "Not implemented yet.")
+    (print-index |(string/find sym $))
     #
     (print "\n\n"
            (string/repeat " " indent)
