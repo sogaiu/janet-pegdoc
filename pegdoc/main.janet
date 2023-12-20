@@ -37,7 +37,7 @@
   PEG special, or if none specified, for a randomly chosen one.
 
   With the `-q` or `--quiz` option, show quiz question for
-  specified PEG special, or if none specified, for a randonly
+  specified PEG special, or if none specified, for a randomly
   chosen one.
 
   With the `-u` or `--usage` option, show usages for
