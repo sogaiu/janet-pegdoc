@@ -52,6 +52,8 @@ repl:1:> (pdoc if)
 nil
 ```
 
+Alternatively, evaluate `(use pegdoc)` before invoking `(pdoc ...)`.
+
 It may also be usable via one's user profile (see `-R` and/or
 `JANET_PROFILE` info in the janet(1) manual page for hints).
 
