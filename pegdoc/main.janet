@@ -71,8 +71,14 @@
 
   (view/configure)
 
-  (def [opts rest]
+  (def [opts rest errs]
     (av/parse-argv argv))
+
+  (when (not (empty? errs))
+    (each err errs
+      (eprint "pdoc: " err))
+    (eprint "Try 'pdoc -h' for usage text.")
+    (os/exit 1))
 
   # usage
   (when (opts :help)
