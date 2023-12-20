@@ -3,6 +3,8 @@
 Tool for doc lookups, usages, and quizzes of [Janet's PEG
 specials](https://janet-lang.org/docs/peg.html).
 
+`pdoc` manifests itself as a macro as well as a command line tool.
+
 ## Installation
 
 Quick:
@@ -19,9 +21,41 @@ jpm install
 ```
 
 In either case, success should lead to the command `pdoc` being
-available on `PATH`.
+available on `PATH` and a `pegdoc` directory under `JANET_PATH`.
 
-## Invocation Examples
+## Use from REPL
+
+There is a macro named `pdoc` (a bit like the built in `doc` macro)
+that can be used from the REPL to look up PEG special documentation.
+
+One way to use it is to start `janet` like:
+
+```
+janet -l pegdoc
+```
+
+Then at the REPL:
+
+```
+Janet 1.32.1-11d7af3f linux/x64/gcc - '(doc)' for help
+repl:1:> (pdoc if)
+
+
+    peg special
+
+    (if cond patt)
+
+    Tries to match patt only if cond matches as well.
+
+    cond will not produce any captures.
+
+nil
+```
+
+It may also be usable via one's user profile (see `-R` and/or
+`JANET_PROFILE` info in the janet(1) manual page for hints).
+
+## CLI Invocation Examples
 
 Show doc and usages for a peg special.
 
