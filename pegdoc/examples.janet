@@ -81,3 +81,20 @@
           (array/push names alias)))))
   #
   names)
+
+(defn parse-all-the-names
+  []
+  (let [[file-path _]
+        (module/find "pegdoc/examples/0.all-the-names")]
+    (when (and file-path
+               (os/stat file-path))
+      (def atn (slurp file-path))
+      (def sections
+        (filter |(pos? (length $)) (string/split "#\n" atn)))
+      (def tbl @{})
+      (each s sections
+        (def pieces (string/split "\n#" s))
+        (put tbl
+             (string/slice (get pieces 0) 2)
+             (map string/trim (array/slice pieces 1))))
+      tbl)))
