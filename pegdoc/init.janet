@@ -36,6 +36,12 @@
     (nil? sym)
     (print-index)
     #
+    (string? sym)
+    (print-index |(string/find sym $))
+    #
+    (int? sym)
+    (print-index |(string/find (string sym) $))
+    #
     (symbol? sym)
     (do
       (def content (thing-content (string sym)))
@@ -51,13 +57,9 @@
              "peg special")
       (print (doc/special-doc content width indent)))
     #
-    (string? sym)
-    (print-index |(string/find sym $))
-    #
     (print "\n\n"
            (string/repeat " " indent)
-           (string/format "unexpected type %n for %n.\n"
-                          (type sym) sym)
+           (string/format "Did not find anything for %n.\n" sym)
            "\n")))
 
 (defmacro pdoc
