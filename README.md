@@ -54,8 +54,9 @@ nil
 
 Alternatively, evaluate `(use pegdoc)` before invoking `(pdoc ...)`.
 
-It may also be usable via one's user profile (see `-R` and/or
-`JANET_PROFILE` info in the janet(1) manual page for hints).
+Setting up one's user profile appropriately may be another way to make
+`pdoc` available (see `-R` and/or `JANET_PROFILE` info in the janet(1)
+manual page for hints).
 
 ## CLI Invocation Examples
 
