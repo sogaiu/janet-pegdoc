@@ -58,6 +58,11 @@ Setting up one's user profile appropriately may be another way to make
 `pdoc` available (see `-R` and/or `JANET_PROFILE` info in the janet(1)
 manual page for hints).
 
+Like the `doc` macro, `pdoc` can also be invoked with a string (or no
+argument) to produce a set of search results.  The results are grouped
+according to whether they are primitive, combining, or capture
+patterns.
+
 ## CLI Invocation Examples
 
 Show doc and usages for a peg special.
