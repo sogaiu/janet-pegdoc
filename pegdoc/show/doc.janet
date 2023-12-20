@@ -1,4 +1,5 @@
 (import ../highlight/highlight :as hl)
+(import ../termsize :as t)
 
 # XXX: not sure if this quoting will work on windows...
 (defn escape
@@ -57,7 +58,9 @@
   m-lines)
 
 (defn special-doc
-  [content]
+  [content &opt width indent]
+  (default width (+ 8 (dyn :pdoc-width (t/cols))))
+  (default indent 0)
   (def lines
     (string/split "\n" content))
   (def doc-lines
@@ -65,6 +68,5 @@
   # XXX: issue with doc-format?
   #      width doesn't seem to work as-is as a value very well
   (print (doc-format (string/join doc-lines "\n")
-                     (+ 8 (dyn :pdoc-width))
-                     0)))
+                     width indent)))
 
