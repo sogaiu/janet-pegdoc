@@ -170,6 +170,7 @@ Combining Patterns
   repeat aka n (actual number)
   sequence aka *
   some
+  sub
   thru
   to
   unref
