@@ -129,7 +129,7 @@ $ pdoc -u if
 nil
 ```
 
-Ask for a quiz question.
+Ask for a quiz question and have your answer checked.
 
 ```
 $ pdoc --quiz replace
