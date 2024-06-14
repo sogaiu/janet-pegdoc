@@ -32,12 +32,15 @@
 
 (comment
 
+  (def eol
+    (if (= :windows (os/which))
+      "\r\n"
+      "\n"))
+
   (def src
-    ``
-    (+ 1 1)
-    # =>
-    2
-    ``)
+    (string "(+ 1 1)" eol
+            "# =>"    eol
+            "2"))
 
   (let [[zloc l r]
         (find-test-indicator (-> (l/par src)
@@ -49,11 +52,9 @@
   true
 
   (def src
-    ``
-    (+ 1 1)
-    # before =>
-    2
-    ``)
+    (string "(+ 1 1)"     eol
+            "# before =>" eol
+            "2"))
 
   (let [[zloc l r]
         (find-test-indicator (-> (l/par src)
@@ -65,11 +66,9 @@
   true
 
   (def src
-    ``
-    (+ 1 1)
-    # => after
-    2
-    ``)
+    (string "(+ 1 1)"    eol
+            "# => after" eol
+            "2"))
 
   (let [[zloc l r]
         (find-test-indicator (-> (l/par src)
@@ -123,17 +122,15 @@
 (comment
 
   (def src
-    ``
-    (comment
-
-      (def a 1)
-
-      (put @{} :a 2)
-      # =>
-      @{:a 2}
-
-      )
-    ``)
+    (string "(comment"         eol
+                               eol
+            "  (def a 1)"      eol
+                               eol
+            "  (put @{} :a 2)" eol
+            "  # =>"           eol
+            "  @{:a 2}"        eol
+                               eol
+            "  )"))
 
   (def [ti-zloc _ _]
     (find-test-indicator (-> (l/par src)
@@ -199,10 +196,14 @@
     (and found-after
          (match (j/node (first after-zlocs))
            [:whitespace _ "\n"]
+           true
+           [:whitespace _ "\r\n"]
            true))
     (if-let [from-next-line (drop 1 after-zlocs)
              next-line (take-until |(match (j/node $)
                                       [:whitespace _ "\n"]
+                                      true
+                                      [:whitespace _ "\r\n"]
                                       true)
                                    from-next-line)
              target (->> next-line
@@ -220,17 +221,15 @@
 (comment
 
   (def src
-    ``
-    (comment
-
-      (def a 1)
-
-      (put @{} :a 2)
-      # =>
-      @{:a 2}
-
-      )
-    ``)
+    (string "(comment"         eol
+                               eol
+            "  (def a 1)"      eol
+                               eol
+            "  (put @{} :a 2)" eol
+            "  # =>"           eol
+            "  @{:a 2}"        eol
+                               eol
+            "  )"))
 
   (def [ti-zloc _ _]
     (find-test-indicator (-> (l/par src)
@@ -257,17 +256,15 @@
   '(:whitespace @{:bc 1 :bl 7 :ec 3 :el 7} "  ")
 
   (def src
-    ``
-    (comment
-
-      (butlast @[:a :b :c])
-      # => @[:a :b]
-
-      (butlast [:a])
-      # => []
-
-    )
-    ``)
+    (string "(comment"                eol
+                                      eol
+            "  (butlast @[:a :b :c])" eol
+            "  # => @[:a :b]"         eol
+                                      eol
+            "  (butlast [:a])"        eol
+            "  # => []"               eol
+                                      eol
+            ")"))
 
   (def [ti-zloc _ _]
     (find-test-indicator (-> (l/par src)
@@ -342,9 +339,14 @@
 
 (defn wrap-as-test-call
   [start-zloc end-zloc test-label]
+  # XXX: hack - not sure if robust enough
+  (def eol-str
+    (if (= :windows (os/which))
+      "\r\n"
+      "\n"))
   (-> (j/wrap start-zloc [:tuple @{}] end-zloc)
       # newline important for preserving long strings
-      (j/insert-child [:whitespace @{} "\n"])
+      (j/insert-child [:whitespace @{} eol-str])
       # name of test macro
       (j/insert-child [:symbol @{} "_verify/is"])
       # for column zero convention, insert leading whitespace
@@ -393,7 +395,7 @@
     (-> curr-zloc
         j/up
         j/down
-        (j/replace [:whitespace @{} "\n"])
+        (j/replace [:whitespace @{} " "])
         # begin hack to prevent trailing whitespace once unwrapping occurs
         j/rightmost
         (j/insert-right [:keyword @{} ":smile"])
@@ -403,21 +405,19 @@
 (comment
 
   (def src
-    ``
-    (comment
-
-      (def a 1)
-
-      (put @{} :a 2)
-      # left =>
-      @{:a 2}
-
-      (+ 1 1)
-      # => right
-      2
-
-      )
-    ``)
+    (string "(comment"         eol
+                               eol
+            "  (def a 1)"      eol
+                               eol
+            "  (put @{} :a 2)" eol
+            "  # left =>"      eol
+            "  @{:a 2}"        eol
+                               eol
+            "  (+ 1 1)"        eol
+            "  # => right"     eol
+            "  2"              eol
+                               eol
+            "  )"))
 
   (-> (l/par src)
       j/zip-down
@@ -425,21 +425,20 @@
       j/root
       l/gen)
   # =>
-  (string "("                            "\n"
-          "\n"
-          "\n"
-          "  (def a 1)"                  "\n"
-          "\n"
-          "  (_verify/is"                "\n"
-          "  (put @{} :a 2)"             "\n"
-          "  # left =>"                  "\n"
-          `  @{:a 2} "line-6 left =>")`  "\n"
-          "\n"
-          "  (_verify/is"                "\n"
-          "  (+ 1 1)"                    "\n"
-          "  # => right"                 "\n"
-          `  2 "line-10 => right")`      "\n"
-          "\n"
+  (string "( "                          eol
+                                        eol
+          "  (def a 1)"                 eol
+                                        eol
+          "  (_verify/is"               eol
+          "  (put @{} :a 2)"            eol
+          "  # left =>"                 eol
+          `  @{:a 2} "line-6 left =>")` eol
+                                        eol
+          "  (_verify/is"               eol
+          "  (+ 1 1)"                   eol
+          "  # => right"                eol
+          `  2 "line-10 => right")`     eol
+                                        eol
           "  :smile)")
 
   )
@@ -455,39 +454,36 @@
 (comment
 
   (def src
-    ``
-    (comment
-
-      (def a 1)
-
-      (put @{} :a 2)
-      # =>
-      @{:a 2}
-
-      (+ 1 1)
-      # left => right
-      2
-
-      )
-    ``)
+    (string "(comment"          eol
+                                eol
+            "  (def a 1)"       eol
+                                eol
+            "  (put @{} :a 2)"  eol
+            "  # =>"            eol
+            "  @{:a 2}"         eol
+                                eol
+            "  (+ 1 1)"         eol
+            "  # left => right" eol
+            "  2"               eol
+                                eol
+            "  )"))
 
   (rewrite-comment-block src)
   # =>
-  (string "("                             "\n"
-          "\n"
-          "\n"
-          "  (def a 1)"                   "\n"
-          "\n"
-          "  (_verify/is"                 "\n"
-          "  (put @{} :a 2)"              "\n"
-          "  # =>"                        "\n"
-          `  @{:a 2} "line-6")`           "\n"
-          "\n"
-          "  (_verify/is"                 "\n"
-          "  (+ 1 1)"                     "\n"
-          "  # left => right"             "\n"
-          `  2 "line-10 left => right")`  "\n"
-          "\n"
+  (string "( "                           eol
+                                         eol
+          "  (def a 1)"                  eol
+                                         eol
+          "  (_verify/is"                eol
+          "  (put @{} :a 2)"             eol
+          "  # =>"                       eol
+          `  @{:a 2} "line-6")`          eol
+                                         eol
+          "  (_verify/is"                eol
+          "  (+ 1 1)"                    eol
+          "  # left => right"            eol
+          `  2 "line-10 left => right")` eol
+                                         eol
           "  :smile)")
 
   )
@@ -495,12 +491,17 @@
 (defn rewrite
   [src]
   (var changed nil)
+  # XXX: hack - not sure if robust enough
+  (def eol-str
+    (if (= :windows (os/which))
+      "\r\n"
+      "\n"))
   (var curr-zloc
     (-> (l/par src)
         j/zip-down
         # XXX: leading newline is a hack to prevent very first thing
         #      from being a comment block
-        (j/insert-left [:whitespace @{} "\n"])
+        (j/insert-left [:whitespace @{} eol-str])
         # XXX: once the newline is inserted, need to move to it
         j/left))
   #
@@ -528,97 +529,93 @@
 (comment
 
   (def src
-    ``
-    (require "json")
-
-    (defn my-fn
-      [x]
-      (+ x 1))
-
-    (comment
-
-      (def a 1)
-
-      (put @{} :a 2)
-      # =>
-      @{:a 2}
-
-      (my-fn 1)
-      # =>
-      2
-
-      )
-
-    (defn your-fn
-      [y]
-      (* y y))
-
-    (comment
-
-      (your-fn 3)
-      # =>
-      9
-
-      (def b 1)
-
-      (+ b 1)
-      # =>
-      2
-
-      (def c 2)
-
-      )
-
-    ``)
+    (string "(require \"json\")" eol
+                                 eol
+            "(defn my-fn"        eol
+            "  [x]"              eol
+            "  (+ x 1))"         eol
+                                 eol
+            "(comment"           eol
+                                 eol
+            "  (def a 1)"        eol
+                                 eol
+            "  (put @{} :a 2)"   eol
+            "  # =>"             eol
+            "  @{:a 2}"          eol
+                                 eol
+            "  (my-fn 1)"        eol
+            "  # =>"             eol
+            "  2"                eol
+                                 eol
+            "  )"                eol
+                                 eol
+            "(defn your-fn"      eol
+            "  [y]"              eol
+            "  (* y y))"         eol
+                                 eol
+            "(comment"           eol
+                                 eol
+            "  (your-fn 3)"      eol
+            "  # =>"             eol
+            "  9"                eol
+                                 eol
+            "  (def b 1)"        eol
+                                 eol
+            "  (+ b 1)"          eol
+            "  # =>"             eol
+            "  2"                eol
+                                 eol
+            "  (def c 2)"        eol
+                                 eol
+            "  )"                eol
+            ))
 
   (rewrite src)
   # =>
-  (string "\n"
-          `(require "json")`      "\n"
-          "\n"
-          "(defn my-fn"           "\n"
-          "  [x]"                 "\n"
-          "  (+ x 1))"            "\n"
-          "\n"
-          "\n"
-          "\n"
-          "\n"
-          "  (def a 1)"           "\n"
-          "\n"
-          "  (_verify/is"         "\n"
-          "  (put @{} :a 2)"      "\n"
-          "  # =>"                "\n"
-          `  @{:a 2} "line-12")`  "\n"
-          "\n"
-          "  (_verify/is"         "\n"
-          "  (my-fn 1)"           "\n"
-          "  # =>"                "\n"
-          `  2 "line-16")`        "\n"
-          "\n"
-          "  :smile"              "\n"
-          "\n"
-          "(defn your-fn"         "\n"
-          "  [y]"                 "\n"
-          "  (* y y))"            "\n"
-          "\n"
-          "\n"
-          "\n"
-          "\n"
-          "  (_verify/is"         "\n"
-          "  (your-fn 3)"         "\n"
-          "  # =>"                "\n"
-          `  9 "line-28")`        "\n"
-          "\n"
-          "  (def b 1)"           "\n"
-          "\n"
-          "  (_verify/is"         "\n"
-          "  (+ b 1)"             "\n"
-          "  # =>"                "\n"
-          `  2 "line-34")`        "\n"
-          "\n"
-          "  (def c 2)"           "\n"
-          "\n"
-          "  :smile"              "\n")
+  (string                        eol
+          `(require "json")`     eol
+                                 eol
+          "(defn my-fn"          eol
+          "  [x]"                eol
+          "  (+ x 1))"           eol
+                                 eol
+          " "                    eol
+                                 eol
+          "  (def a 1)"          eol
+                                 eol
+          "  (_verify/is"        eol
+          "  (put @{} :a 2)"     eol
+          "  # =>"               eol
+          `  @{:a 2} "line-12")` eol
+                                 eol
+          "  (_verify/is"        eol
+          "  (my-fn 1)"          eol
+          "  # =>"               eol
+          `  2 "line-16")`       eol
+                                 eol
+          "  :smile"             eol
+                                 eol
+          "(defn your-fn"        eol
+          "  [y]"                eol
+          "  (* y y))"           eol
+                                 eol
+          " "                    eol
+                                 eol
+          "  (_verify/is"        eol
+          "  (your-fn 3)"        eol
+          "  # =>"               eol
+          `  9 "line-28")`       eol
+                                 eol
+          "  (def b 1)"          eol
+                                 eol
+          "  (_verify/is"        eol
+          "  (+ b 1)"            eol
+          "  # =>"               eol
+          `  2 "line-34")`       eol
+                                 eol
+          "  (def c 2)"          eol
+                                 eol
+          "  :smile"             eol)
 
   )
 
@@ -626,50 +623,47 @@
 
   # https://github.com/sogaiu/judge-gen/issues/1
   (def src
-    ```
-    (comment
-
-      (-> ``
-          123456789
-          ``
-          length)
-      # =>
-      9
-
-      (->
-        ``
-        123456789
-        ``
-        length)
-      # =>
-      9
-
-      )
-    ```)
+    (string "(comment"        eol
+                              eol
+            "  (-> ``"        eol
+            "      123456789" eol
+            "      ``"        eol
+            "      length)"   eol
+            "  # =>"          eol
+            "  9"             eol
+                              eol
+            "  (->"           eol
+            "    ``"          eol
+            "    123456789"   eol
+            "    ``"          eol
+            "    length)"     eol
+            "  # =>"          eol
+            "  9"             eol
+                              eol
+            "  )"))
 
   (rewrite src)
   # =>
-  (string "\n"
-          "\n"
-          "\n"
-          "\n"
-          "  (_verify/is"    "\n"
-          "  (-> ``"         "\n"
-          "      123456789"  "\n"
-          "      ``"         "\n"
-          "      length)"    "\n"
-          "  # =>"           "\n"
-          `  9 "line-7")`    "\n"
-          "\n"
-          "  (_verify/is"    "\n"
-          "  (->"            "\n"
-          "    ``"           "\n"
-          "    123456789"    "\n"
-          "    ``"           "\n"
-          "    length)"      "\n"
-          "  # =>"           "\n"
-          `  9 "line-15")`   "\n"
-          "\n"
+  (string                   eol
+          " "               eol
+                            eol
+          "  (_verify/is"   eol
+          "  (-> ``"        eol
+          "      123456789" eol
+          "      ``"        eol
+          "      length)"   eol
+          "  # =>"          eol
+          `  9 "line-7")`   eol
+                            eol
+          "  (_verify/is"   eol
+          "  (->"           eol
+          "    ``"          eol
+          "    123456789"   eol
+          "    ``"          eol
+          "    length)"     eol
+          "  # =>"          eol
+          `  9 "line-15")`  eol
+                            eol
           "  :smile")
 
   )
@@ -822,16 +816,21 @@
   [src]
   (when (not (empty? src))
     (when-let [rewritten (rewrite src)]
+      # XXX: hack - not sure if robust enough
+      (def eol-str
+        (if (= :windows (os/which))
+          "\r\n"
+          "\n"))
       (string verify-as-string
-              "\n"
+              eol-str
               "(_verify/start-tests)"
-              "\n"
+              eol-str
               rewritten
-              "\n"
+              eol-str
               "(_verify/end-tests)"
-              "\n"
+              eol-str
               "(_verify/report)"
-              "\n"))))
+              eol-str))))
 
 # no tests so won't be executed
 (comment
