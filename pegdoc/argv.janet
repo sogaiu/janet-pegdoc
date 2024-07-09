@@ -6,6 +6,7 @@
    "--doc" "-d"
    "--help" "-h"
    "--quiz" "-q"
+   "--trace" "-t"
    "--usage" "-u"})
 
 (def shorts-table
