@@ -39,7 +39,7 @@
         thing))))
 
 (def examples-root
-  "pegdoc/temp/examples")
+  "pegdoc/margaret/examples")
 
 (defn get-filepath
   [filename]
