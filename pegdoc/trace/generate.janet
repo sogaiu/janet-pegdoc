@@ -1,7 +1,8 @@
 (import ../margaret/margaret/render :as r)
 
 (def samples-root
-  "pegdoc/trace/samples")
+  # XXX: kind of a work-around
+  (string (dyn :syspath) "/pegdoc/trace/samples"))
 
 (defn enum-samples
   []
