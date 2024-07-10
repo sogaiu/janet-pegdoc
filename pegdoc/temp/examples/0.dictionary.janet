@@ -52,18 +52,18 @@
 
   # alternative expression of `my-grammar`
   (def my-grammar-alt
-    '{# :b wrapped in parens
-      :main (sequence "("
-                      :b
-                      ")")
-      # :a or nothing wrapped in lowercase b's
-      :b (sequence "b"
-                   (choice :a 0)
-                   "b")
-      # :b wrapped in lowercase a's
-      :a (sequence "a"
-                   :b
-                   "a")})
+    '@{# :b wrapped in parens
+       :main (sequence "("
+                       :b
+                       ")")
+       # :a or nothing wrapped in lowercase b's
+       :b (sequence "b"
+                    (choice :a 0)
+                    "b")
+       # :b wrapped in lowercase a's
+       :a (sequence "a"
+                    :b
+                    "a")})
 
   # simplest match
   (peg/match my-grammar-alt "(bb)")

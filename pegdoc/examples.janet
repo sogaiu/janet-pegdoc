@@ -38,16 +38,19 @@
         #
         thing))))
 
+(def examples-root
+  "pegdoc/temp/examples")
+
 (defn get-filepath
   [filename]
   (def [file-path _]
-    (module/find (string "pegdoc/examples/" filename)))
+    (module/find (string examples-root "/" filename)))
   file-path)
 
 (defn all-example-file-names
   []
   (let [[file-path _]
-        (module/find "pegdoc/examples/0.all-the-names")]
+        (module/find (string examples-root "/0.all-the-names"))]
     (when file-path
       (let [dir-path
             (string/slice file-path 0
@@ -85,7 +88,7 @@
 (defn parse-all-the-names
   []
   (let [[file-path _]
-        (module/find "pegdoc/examples/0.all-the-names")]
+        (module/find (string examples-root "/0.all-the-names"))]
     (when (and file-path
                (os/stat file-path))
       (def atn (slurp file-path))

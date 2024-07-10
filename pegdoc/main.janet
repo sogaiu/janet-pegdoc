@@ -114,7 +114,7 @@
              (nil? (opts :usage))
              (nil? (opts :quiz)))
     (if-let [[file-path _]
-             (module/find "pegdoc/examples/0.all-the-names")]
+             (module/find (string ex/examples-root "/0.all-the-names"))]
       (do
         (when (not (os/stat file-path))
           (eprintf "Failed to find file: %s" file-path)
