@@ -14,7 +14,7 @@
   (def first-event-path
     (string/format "file://%s/%s/0.html" (os/cwd) dir-path))
   (def trace-log-path
-    (string/format "file://%s/%s/trace-log.html" (os/cwd) dir-path))
+    (string/format "file://%s/%s/all.html" (os/cwd) dir-path))
   (printf "* first event: %s" first-event-path)
   (printf "* all events: %s" trace-log-path))
 
