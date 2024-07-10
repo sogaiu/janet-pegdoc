@@ -9,7 +9,7 @@
 (import ./show/doc :as doc)
 (import ./show/usages :as u)
 (import ./show/questions :as qu)
-(import ./trace :as t)
+(import ./trace/generate :as tg)
 (import ./view :as view)
 
 (def usage
@@ -116,16 +116,16 @@
     (doc/all-names (ex/all-names file-names))
     (os/exit 0))
 
+  # generate trace files
   (when (opts :trace)
-    (def content
-      (if (not (first rest))
-        t/example-content
-        (let [arg-file (first rest)]
-          (when (not (os/stat arg-file))
-            (eprintf "Failed to find file: %s" arg-file)
-            (os/exit 1))
-          (slurp arg-file))))
-    (t/make-trace-files content)
+    (def arg-file
+      (if-let [path (first rest)]
+        path
+        (string tg/samples-root "/" (rnd/choose (tg/enum-samples)))))
+    (when (not (os/stat arg-file))
+      (eprintf "Failed to find file: %s" arg-file)
+      (os/exit 1))
+    (tg/gen-files (slurp arg-file))
     (os/exit 0))
 
   # check if there was a peg special specified

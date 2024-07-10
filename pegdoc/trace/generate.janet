@@ -1,14 +1,13 @@
-(import ./margaret/margaret/render :as r)
+(import ../margaret/margaret/render :as r)
 
-(def example-content
-  ``
-  (sequence "a" "b")
-  "ab"
-  0
-  :hello :hi
-  ``)
+(def samples-root
+  "pegdoc/trace/samples")
 
-(defn make-trace-files
+(defn enum-samples
+  []
+  (os/dir samples-root))
+
+(defn gen-files
   [content &opt dir-path]
   (default dir-path "meg-trace")
   (try
