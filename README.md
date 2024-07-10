@@ -150,51 +150,52 @@ Show all peg specials.
 $ pdoc
 
 Primitive Patterns
-  Boolean Patterns
-  Integer Patterns
-  Range Patterns
-  Set Patterns
-  String Patterns
+  Integer (..., -1, 0, 1, ...)
+  range                  =  (range r1 ?r2 ... ?rn)
+  set                    =  (set chars)
+  String ("...")
+  Boolean (true, false)
 
 Combining Patterns
-  any
-  at-least
-  at-most
-  backmatch
-  between aka opt or ?
-  choice aka +
-  if
-  if-not
-  look aka >
-  not aka !
-  repeat aka n (actual number)
-  sequence aka *
-  some
-  sub
-  thru
-  to
-  unref
+  any                    =  (any patt)
+  at-least               =  (at-least n patt)
+  at-most                =  (at-most n patt)
+  backmatch              =  (backmatch ?tag)
+  between (opt, ?)       =  (between min max patt)
+  choice (+)             =  (choice patt-1 patt-2 ...)
+  if                     =  (if cond patt)
+  if-not                 =  (if-not cond patt)
+  look (>)               =  (look offset ?patt)
+  not (!)                =  (not patt)
+  repeat (0, 1, 2, ...)  =  (repeat n patt)
+  sequence (*)           =  (sequence patt-1 patt-2 ...)
+  some                   =  (some patt)
+  split                  =  (split sep patt)
+  sub                    =  (sub window-patt patt)
+  thru                   =  (thru patt)
+  to                     =  (to patt)
 
 Captures
-  accumulate aka %
-  argument
-  backref aka ->
-  capture aka <- or quote
-  cmt
-  column
-  constant
-  drop
-  error
-  group
-  int
-  int-be
-  lenprefix
-  line
-  number
-  position aka $
-  replace aka /
-  uint
-  uint-be
+  accumulate (%)         =  (accumulate pat ?tag)
+  argument               =  (argument n ?tag)
+  backref (->)           =  (backref prev-tag ?tag)
+  capture (<-, quote)    =  (capture patt ?tag)
+  cmt                    =  (cmt patt fun ?tag)
+  column                 =  (column ?tag)
+  constant               =  (constant k ?tag)
+  drop                   =  (drop patt)
+  error                  =  (error ?patt)
+  group                  =  (group patt ?tag)
+  int                    =  (int n ?tag)
+  int-be                 =  (int-be n ?tag)
+  lenprefix              =  (lenprefix n patt)
+  line                   =  (line ?tag)
+  number                 =  (number patt ?base ?tag)
+  position ($)           =  (position ?tag)
+  replace (/)            =  (replace patt subst ?tag)
+  uint                   =  (uint n ?tag)
+  uint-be                =  (uint-be n ?tag)
+  unref                  =  (unref rule ?tag)
 
 Built-ins
   :a                     =  (range "AZ" "az")
@@ -237,7 +238,7 @@ Aliases
   (-> prev-tag ?tag)     =  (backref prev-tag ?tag)
   (/ patt subst ?tag)    =  (replace patt subst ?tag)
   (<- patt ?tag)         =  (capture patt ?tag)
-  (> offset patt)        =  (look offset patt)
+  (> offset ?patt)       =  (look offset ?patt)
   (? patt)               =  (between 0 1 patt)
   (1 patt)               =  (repeat 1 patt)
   (2 patt)               =  (repeat 2 patt)
@@ -251,8 +252,8 @@ Aliases
 Get basic help.
 
 ```
-$ pdoc -h
 Usage: pdoc [option] [peg-special]
+       pdoc [-t|--trace] [file|pattern]
 
 View Janet PEG information.
 
@@ -262,10 +263,12 @@ View Janet PEG information.
   -q, --quiz [<peg-special>]   show quiz question
   -u, --usage [<peg-special>]  show usage
 
+  -t, --trace [file|pattern]   generate trace files
+
   --bash-completion            output bash-completion bits
   --fish-completion            output fish-completion bits
   --zsh-completion             output zsh-completion bits
-  --raw-all                    show all names to help completion
+  --raw-all                    show all names for completion
 
 With a peg-special, but no options, show docs and usages.
 
@@ -283,6 +286,16 @@ chosen one.
 With the `-u` or `--usage` option, show usages for
 specified PEG special, or if none specified, for a randomly
 chosen one.
+
+With the `-t` or `--trace` option, generate trace files for
+`meg/match` using arguments contained in `file` or a file
+selected by substring-matching a file name specified by 
+`pattern`.  `file` should be a `.janet` file, which when
+evaluated, returns a tuple with values for each desired
+argument.  If `file` or `pattern` is not provided, some
+appropriate content will be arranged for.  Generated files
+will end up in a subdirectory.  `meg/match`'s signature is
+the same as that of `peg/match`.
 
 With no arguments, lists all PEG specials.
 

@@ -15,7 +15,7 @@
 (def usage
   ``
   Usage: pdoc [option] [peg-special]
-         pdoc --trace [file|pattern]
+         pdoc [-t|--trace] [file|pattern]
 
   View Janet PEG information.
 
@@ -54,10 +54,10 @@
   selected by substring-matching a file name specified by 
   `pattern`.  `file` should be a `.janet` file, which when
   evaluated, returns a tuple with values for each desired
-  argument.  If `file` is not provided, some appropriate
-  content will be arranged for.  Generated files will end up
-  in a subdirectory.  `meg/match`'s signature is the same as
-  that of `peg/match`.
+  argument.  If `file` or `pattern` is not provided, some
+  appropriate content will be arranged for.  Generated files
+  will end up in a subdirectory.  `meg/match`'s signature is
+  the same as that of `peg/match`.
 
   With no arguments, lists all PEG specials.
 
