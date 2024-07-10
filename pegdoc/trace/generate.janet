@@ -7,6 +7,17 @@
   []
   (os/dir samples-root))
 
+(defn report
+  [dir-path]
+  (printf "Generated trace files in %s." dir-path)
+  (printf "Recommended starting points:")
+  (def first-event-path
+    (string/format "file://%s/%s/0.html" (os/cwd) dir-path))
+  (def trace-log-path
+    (string/format "file://%s/%s/trace-log.html" (os/cwd) dir-path))
+  (printf "* first event: %s" first-event-path)
+  (printf "* all events: %s" trace-log-path))
+
 (defn gen-files
   [content &opt content-type dir-path]
   (default content-type :data)
@@ -47,12 +58,12 @@
                   (string/format "failed to arrange for trace directory: %s"
                                  dir-path))))
       #
-      (os/cd dir-path)
-      (r/render peg text start ;args)
-      (os/cd "..")
-      (printf "Generated trace files in %s." dir-path)
-      (printf "Why not have a look at file://%s/%s/0.html?"
-              (os/cwd) dir-path))
+      (def old-dir (os/cwd))
+      (defer (os/cd old-dir)
+        (os/cd dir-path)
+        (r/render peg text start ;args))
+      #
+      (report dir-path))
     ([e]
       (eprintf "problem creating trace files using: %s" content)
       (eprintf e))))
