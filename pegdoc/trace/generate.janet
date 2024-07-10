@@ -9,7 +9,7 @@
 
 (defn report
   [dir-path]
-  (printf "Generated trace files in %s." dir-path)
+  (printf "Generated trace files in `%s`." dir-path)
   (printf "Recommended starting points:")
   (def first-event-path
     (string/format "file://%s/%s/0.html" (os/cwd) dir-path))
@@ -19,20 +19,12 @@
   (printf "* all events: %s" trace-log-path))
 
 (defn gen-files
-  [content &opt content-type dir-path]
-  (default content-type :data)
+  [content &opt dir-path]
   (default dir-path "meg-trace")
   (try
     (do
       (def [peg text start & args]
-        (cond
-          (= :data content-type)
-          (parse-all content)
-          #
-          (= :code content-type)
-          (eval-string content)
-          #
-          (errorf "unrecognized content-type: %s" content-type)))
+        (eval-string content))
       #
       (default start 0)
       (default args [])
@@ -45,7 +37,7 @@
       (if stat
         (do
           (def prmpt
-            (string/format "%s exists already, overwrite contents? [y/N] "
+            (string/format "Directory `%s` exists, overwrite contents? [y/N] "
                            dir-path))
           (def buf (getline prmpt))
           (when (not (string/has-prefix? "y" (string/ascii-lower buf)))

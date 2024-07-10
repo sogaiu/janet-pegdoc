@@ -125,11 +125,8 @@
     (when (not (os/stat arg-file))
       (eprintf "Failed to find file: %s" arg-file)
       (os/exit 1))
-    (def content-type
-      (if (string/has-suffix? ".janet" arg-file)
-        :code
-        :data))
-    (tg/gen-files (slurp arg-file) content-type)
+    (printf "Selected file: %s" arg-file)
+    (tg/gen-files (slurp arg-file))
     (os/exit 0))
 
   # check if there was a peg special specified
