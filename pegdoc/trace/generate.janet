@@ -8,12 +8,20 @@
   (os/dir samples-root))
 
 (defn gen-files
-  [content &opt dir-path]
+  [content &opt content-type dir-path]
+  (default content-type :data)
   (default dir-path "meg-trace")
   (try
     (do
       (def [peg text start & args]
-        (parse-all content))
+        (cond
+          (= :data content-type)
+          (parse-all content)
+          #
+          (= :code content-type)
+          (eval-string content)
+          #
+          (errorf "unrecognized content-type: %s" content-type)))
       #
       (default start 0)
       (default args [])
