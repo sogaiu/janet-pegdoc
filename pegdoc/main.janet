@@ -9,11 +9,13 @@
 (import ./show/doc :as doc)
 (import ./show/usages :as u)
 (import ./show/questions :as qu)
+(import ./trace :as t)
 (import ./view :as view)
 
 (def usage
   ``
   Usage: pdoc [option] [peg-special]
+         pdoc --trace [file]
 
   View Janet PEG information.
 
@@ -22,6 +24,8 @@
     -d, --doc [<peg-special>]    show doc
     -q, --quiz [<peg-special>]   show quiz question
     -u, --usage [<peg-special>]  show usage
+
+    -t, --trace [file]           generate trace files
 
     --bash-completion            output bash-completion bits
     --fish-completion            output fish-completion bits
@@ -44,6 +48,14 @@
   With the `-u` or `--usage` option, show usages for
   specified PEG special, or if none specified, for a randomly
   chosen one.
+
+  With the `-t` or `--trace` option, generate trace files for
+  `meg/match` using arguments contained in `file`.  `file`
+  should be a jdn file with forms for each desired argument.
+  If `file` is not provided, some appropriate content will
+  be arranged for.  Generated files will end up in a
+  subdirectory.  `meg/match`'s signature is the same as that
+  of `peg/match`.
 
   With no arguments, lists all PEG specials.
 
@@ -102,6 +114,18 @@
       (eprintf "Failed to find all names.")
       (os/exit 1))
     (doc/all-names (ex/all-names file-names))
+    (os/exit 0))
+
+  (when (opts :trace)
+    (def content
+      (if (not (first rest))
+        t/example-content
+        (let [arg-file (first rest)]
+          (when (not (os/stat arg-file))
+            (eprintf "Failed to find file: %s" arg-file)
+            (os/exit 1))
+          (slurp arg-file))))
+    (t/make-trace-files content)
     (os/exit 0))
 
   # check if there was a peg special specified
