@@ -7,6 +7,11 @@
   []
   (os/dir samples-root))
 
+(defn scan-for-files
+  [pattern]
+  (filter |(string/find pattern $)
+          (enum-samples)))
+
 (defn report
   [dir-path]
   (printf "Generated trace files in `%s`." dir-path)

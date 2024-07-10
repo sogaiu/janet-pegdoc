@@ -15,7 +15,7 @@
 (def usage
   ``
   Usage: pdoc [option] [peg-special]
-         pdoc --trace [file]
+         pdoc --trace [file|pattern]
 
   View Janet PEG information.
 
@@ -25,7 +25,7 @@
     -q, --quiz [<peg-special>]   show quiz question
     -u, --usage [<peg-special>]  show usage
 
-    -t, --trace [file]           generate trace files
+    -t, --trace [file|pattern]   generate trace files
 
     --bash-completion            output bash-completion bits
     --fish-completion            output fish-completion bits
@@ -50,12 +50,14 @@
   chosen one.
 
   With the `-t` or `--trace` option, generate trace files for
-  `meg/match` using arguments contained in `file`.  `file`
-  should be a jdn file with forms for each desired argument.
-  If `file` is not provided, some appropriate content will
-  be arranged for.  Generated files will end up in a
-  subdirectory.  `meg/match`'s signature is the same as that
-  of `peg/match`.
+  `meg/match` using arguments contained in `file` or a file
+  selected by substring-matching a file name specified by 
+  `pattern`.  `file` should be a `.janet` file, which when
+  evaluated, returns a tuple with values for each desired
+  argument.  If `file` is not provided, some appropriate
+  content will be arranged for.  Generated files will end up
+  in a subdirectory.  `meg/match`'s signature is the same as
+  that of `peg/match`.
 
   With no arguments, lists all PEG specials.
 
@@ -119,8 +121,16 @@
   # generate trace files
   (when (opts :trace)
     (def arg-file
-      (if-let [path (first rest)]
-        path
+      (if-let [arg (first rest)]
+        (if (os/stat arg)
+          arg
+          (let [results (tg/scan-for-files arg)
+                files (if (not (empty? results))
+                        results
+                        (do
+                          (printf "Did not match `%s`, going random..." arg)
+                          (tg/enum-samples)))]
+            (string tg/samples-root "/" (rnd/choose files))))
         (string tg/samples-root "/" (rnd/choose (tg/enum-samples)))))
     (when (not (os/stat arg-file))
       (eprintf "Failed to find file: %s" arg-file)
