@@ -1,4 +1,4 @@
-(import ../margaret/margaret/render :as r)
+(import ./render :as r)
 
 (def samples-root
   # XXX: kind of a work-around
@@ -26,7 +26,7 @@
 
 (defn gen-files
   [content &opt dir-path]
-  (default dir-path "meg-trace")
+  (default dir-path "pdoc-trace")
   (try
     (do
       (def [peg text start & args]
