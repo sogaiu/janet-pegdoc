@@ -13,7 +13,7 @@
   <pre>
   meg/match call:
   <textarea name="call" rows="5" cols="72">%s</textarea>
-  <input type="submit" value="send"/>
+  <input type="submit" value="generate trace"/>
   </pre>
   </form>
   ``)
@@ -62,19 +62,13 @@
   {:headers {"Content-type" "text/html"}
    :status 200
    :body (string "<pre>"
-                 "Trace generated successfully for:\n"
+                 "Trace generated successfully.\n"
                  "\n"
-                 "peg: " (string/format "%m" peg) "\n"
-                 "text: " `"` (string/format "%s" text) `"` "\n"
-                 "start: " (string/format "%d" start) "\n"
-                 "args: " (string/format "%n" args) "\n"
-                 "<hr>\n"
                  "Here are some starting points:\n"
                  "\n"
-                 `<a href="/first.html">first frame</a>` "\n"
-                 `<a href="/last.html">last frame</a>` "\n"
-                 `<a href="/all.html">all frames</a>` "\n"
-                 "<hr>\n"
+                 `<a href="/first.html">first event</a>` "\n"
+                 `<a href="/last.html">last event</a>` "\n"
+                 `<a href="/all.html">all events</a>` "\n"
                  "</pre>")})
 
 (defn handle-call
