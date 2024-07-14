@@ -289,13 +289,17 @@ chosen one.
 
 With the `-t` or `--trace` option, generate trace files for
 `meg/match` using arguments contained in `file` or a file
-selected by substring-matching a file name specified by 
+selected by substring-matching a file name specified by
 `pattern`.  `file` should be a `.janet` file, which when
 evaluated, returns a tuple with values for each desired
 argument.  If `file` or `pattern` is not provided, some
 appropriate content will be arranged for.  Generated files
 will end up in a subdirectory.  `meg/match`'s signature is
 the same as that of `peg/match`.
+
+With the `-w` or `--web` option, start a local web server
+that provides access to the tracing functionality described
+for the `-t` or `--trace` option.
 
 With no arguments, lists all PEG specials.
 
@@ -364,11 +368,12 @@ Below are some hints about where such locations might be:
 ## Credits
 
 Portions of tests and the documentation come from Janet and the
-janet-lang.org website.  Thus the following license applies to at
-least those portions.
+janet-lang.org website.  In addition, spork/http is included.
+
+Thus the following license applies to at least those portions.
 
 ```
-Copyright (c) 2019, 2020, 2021, 2022, 2023 Calvin Rose and contributors
+Copyright (c) 2019, 2020, 2021, 2022, 2023, 2024 Calvin Rose and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

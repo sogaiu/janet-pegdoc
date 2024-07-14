@@ -7,7 +7,8 @@
    "--help" "-h"
    "--quiz" "-q"
    "--trace" "-t"
-   "--usage" "-u"})
+   "--usage" "-u"
+   "--web" "-w"})
 
 (def shorts-table
   (tabseq [[full short] :pairs arg-data

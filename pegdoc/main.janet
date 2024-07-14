@@ -10,12 +10,14 @@
 (import ./show/usages :as u)
 (import ./show/questions :as qu)
 (import ./trace/generate :as tg)
+(import ./trace/web :as tw)
 (import ./view :as view)
 
 (def usage
   ``
   Usage: pdoc [option] [peg-special]
          pdoc [-t|--trace] [file|pattern]
+         pdoc [-w|--web]
 
   View Janet PEG information.
 
@@ -26,6 +28,7 @@
     -u, --usage [<peg-special>]  show usage
 
     -t, --trace [file|pattern]   generate trace files
+    -w, --web                    start web ui for tracing
 
     --bash-completion            output bash-completion bits
     --fish-completion            output fish-completion bits
@@ -58,6 +61,10 @@
   appropriate content will be arranged for.  Generated files
   will end up in a subdirectory.  `meg/match`'s signature is
   the same as that of `peg/match`.
+
+  With the `-w` or `--web` option, start a local web server
+  that provides access to the tracing functionality described
+  for the `-t` or `--trace` option.
 
   With no arguments, lists all PEG specials.
 
@@ -138,6 +145,11 @@
     (printf "Selected file: %s" arg-file)
     (tg/gen-files (slurp arg-file))
     (os/exit 0))
+
+  # start web server
+  (when (opts :web)
+    # expressing this way allows process to stay alive
+    (break (tw/main nil)))
 
   # check if there was a peg special specified
   (def special-fname
