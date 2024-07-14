@@ -570,46 +570,6 @@
 
 ########################################################################
 
-(defn args-from-cmd-line
-  [& argv]
-  (assert (>= (length argv) 2)
-          (string/format "at least peg and string required"))
-
-  (def peg
-    (let [cand (get argv 0)]
-      (assert cand "expected peg, got nothing")
-      (def [success? result] (protect (parse cand)))
-      (assert success?
-              (string/format "failed to parse peg, got:\n  `%s`"
-                             result))
-      result))
-
-  (assert (meg/analyze peg)
-          (string/format "problem with peg: %n" peg))
-
-  (def text
-    (let [result (get argv 1)]
-      (assert result "expected text, got nothing")
-      result))
-
-  (def start
-    (let [result (scan-number (get argv 2 "0"))]
-      (assert result
-              (string/format "expected number or nothing, got: %s"
-                             (get argv 2)))
-      result))
-
-  # XXX: should check for errors and report here...
-  (def args
-    (map parse (drop 3 argv)))
-
-  {:peg peg
-   :text text
-   :start start
-   :args args})
-
-########################################################################
-
 (defn events?
   [cand]
   (assert (array? cand)
@@ -623,45 +583,22 @@
 
 ########################################################################
 
-(defn main
+(defn render
   ````
   Render HTML files to represent a `meg/match` call.
 
-  Input:
+  Arguments:
 
-  If the first argument is a dictionary, it may have the keys:
+  The arguments correpsond to those for `meg/match`:
 
-  * :peg
-  * :text
-  * :start (optional)
-  * :args (optional)
-
-  with associated values to correspond to a call to `meg/match`.
-
-  An example dictionary is:
-
-  ```
-  {:peg '(sequence "e")
-   :text "hello"
-   :start 1
-   :args []}
-  ```
-
-  Otherwise, the arguments are assumed to result from a command line
-  invocation and should all be strings.  The first argument will be
-  ignored as it represents the "executing" file.  The subsequent
-  arguments should be strings representing values (which the code will
-  try to "cast" appropriately) that are to be passed to `meg/match`.
-
-  A suitable command line invocation might be:
-
-  ```
-  render.janet '(capture "b")' "ab" 1
-  ```
+  * peg
+  * text
+  * start (optional)
+  * args (optional)
 
   Return value:
 
-  Upon success, returns the events.
+  Upon success, returns the trace events.
 
   Output:
 
@@ -681,15 +618,9 @@
   All files are created in the current directory.
 
   ````
-  [& argv]
-  (def {:peg peg
-        :text text
-        :start start
-        :args args}
-    # XXX: is there a better check?
-    (if (dictionary? (get argv 0))
-      (get argv 0)
-      (args-from-cmd-line ;(drop 1 argv))))
+  [peg text &opt start & args]
+  (default start 0)
+  (default args [])
 
   # XXX: check peg, text, start, and args?
 
@@ -741,14 +672,70 @@
 
     events))
 
-(defn render
-  ``
-  Convenience function for tersely invoking `main`.
-  ``
-  [peg text &opt start & args]
-  (default start 0)
-  (default args [])
-  (main {:peg peg
-         :text text
-         :start start
-         :args args}))
+########################################################################
+
+(defn args-from-cmd-line
+  [& argv]
+  (assert (>= (length argv) 2)
+          (string/format "at least peg and string required"))
+
+  (def peg
+    (let [cand (get argv 0)]
+      (assert cand "expected peg, got nothing")
+      (def [success? result] (protect (parse cand)))
+      (assert success?
+              (string/format "failed to parse peg, got:\n  `%s`"
+                             result))
+      result))
+
+  (assert (meg/analyze peg)
+          (string/format "problem with peg: %n" peg))
+
+  (def text
+    (let [result (get argv 1)]
+      (assert result "expected text, got nothing")
+      result))
+
+  (def start
+    (let [result (scan-number (get argv 2 "0"))]
+      (assert result
+              (string/format "expected number or nothing, got: %s"
+                             (get argv 2)))
+      result))
+
+  # XXX: should check for errors and report here...
+  (def args
+    (map parse (drop 3 argv)))
+
+  {:peg peg
+   :text text
+   :start start
+   :args args})
+
+########################################################################
+
+(defn main
+  ````
+  A wrapper function around `render`.
+
+  The arguments are assumed to result from a command line invocation
+  and should all be strings.  The first argument will be ignored as it
+  represents the "executing" file.  The subsequent arguments should be
+  strings representing values (which the code will try to "cast"
+  appropriately) that are to be passed to `meg/match`.
+
+  A suitable command line invocation might be:
+
+  ```
+  render.janet '(capture "b")' "ab" 1
+  ```
+  ````
+  [& argv]
+  (def {:peg peg
+        :text text
+        :start start
+        :args args}
+    (args-from-cmd-line ;(drop 1 argv)))
+  #
+  (render peg text start ;args))
+

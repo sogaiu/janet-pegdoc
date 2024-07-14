@@ -149,7 +149,7 @@
   # start web server
   (when (opts :web)
     # expressing this way allows process to stay alive
-    (break (tw/main nil)))
+    (break (tw/serve)))
 
   # check if there was a peg special specified
   (def special-fname

@@ -164,10 +164,19 @@
   (def handler (http/router routes))
   (handler request))
 
-(defn main
-  [_ &opt host port]
+(defn serve
+  [&opt dir host port]
+  (default dir "pdoc-trace")
   (default host "127.0.0.1")
   (default port 8000)
   #
+  (when (not (os/stat dir))
+    (printf "Trying to create directory: %s" dir)
+    (os/mkdir dir))
+  (assert (= :directory (os/stat dir :mode))
+          (string/format "Failed to create / locate dir: %s" dir))
+  #
+  (printf "Changing working directory to: %s" dir)
+  (os/cd dir)
   (printf "Trying to start server at http://%s:%d" host port)
   (http/server router-handler host port))
