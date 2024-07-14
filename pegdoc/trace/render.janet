@@ -659,6 +659,10 @@
   render.janet '(capture "b")' "ab" 1
   ```
 
+  Return value:
+
+  Upon success, returns the events.
+
   Output:
 
   Resulting HTML files representing individual "events" have names
@@ -733,7 +737,9 @@
                 (string/format "mismatch - expected: %d, but got: %d"
                                (get event :exit)
                                (get (array/peek stack) :entry)))
-        (array/pop stack)))))
+        (array/pop stack)))
+
+    events))
 
 (defn render
   ``
