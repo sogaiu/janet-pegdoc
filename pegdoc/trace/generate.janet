@@ -18,10 +18,13 @@
   (printf "Generated trace files in `%s`." dir-path)
   (printf "Recommended starting points:")
   (def first-event-path
-    (string/format "file://%s/%s/0.html" (os/cwd) dir-path))
+    (string/format "file://%s/%s/first.html" (os/cwd) dir-path))
+  (def last-event-path
+    (string/format "file://%s/%s/last.html" (os/cwd) dir-path))
   (def trace-log-path
     (string/format "file://%s/%s/all.html" (os/cwd) dir-path))
   (printf "* first event: %s" first-event-path)
+  (printf "* last event: %s" last-event-path)
   (printf "* all events: %s" trace-log-path))
 
 (defn gen-files

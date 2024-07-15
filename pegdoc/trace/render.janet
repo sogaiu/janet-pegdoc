@@ -670,6 +670,10 @@
                                (get (array/peek stack) :entry)))
         (array/pop stack)))
 
+    # make some special-case aliases (actually duplicates)
+    (spit "first.html" (slurp "0.html"))
+    (spit "last.html" (slurp (string (dec (length events)) ".html")))
+
     events))
 
 ########################################################################

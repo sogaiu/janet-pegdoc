@@ -55,10 +55,6 @@
             :body (string "There was a problem when rendering:\n\n"
                           results)}))
   #
-  (spit "first.html" (slurp "0.html"))
-  (def last-event-no (dec (length results)))
-  (spit "last.html" (slurp (string last-event-no ".html")))
-  #
   {:headers {"Content-type" "text/html"}
    :status 200
    :body (string "<pre>"
