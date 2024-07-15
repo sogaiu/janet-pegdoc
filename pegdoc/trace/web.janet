@@ -1,23 +1,9 @@
 (import ./http)
 (import ../margaret/margaret/meg :as m)
 (import ./render :as r)
+(import ./generate :as tg)
 
 ########################################################################
-
-# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form
-# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea
-# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/submit
-(def form-template
-  ``
-  <pre><u>generate a new trace</u></pre>
-  <pre>
-  <form action="/check"
-        method="post"
-        name="call"><textarea name="call" rows="5" cols="72">%s</textarea>
-  <input type="submit" value="generate"/>
-  </pre>
-  </form>
-  ``) # above, <form ...><textarea ... done to get specific spacing
 
 (def event-links
   ``
@@ -30,6 +16,35 @@
   <pre>
   <a href="all.html">all</a>
   </pre>
+  ``)
+
+# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form
+# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea
+# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/submit
+(def new-trace-form-template
+  ``
+  <pre><u>generate a new trace</u></pre>
+  <pre>
+  <form action="/check"
+        method="post"><textarea name="call"
+                                rows="5"
+                                cols="72">%s</textarea>
+  <input type="submit" value="generate"/>
+  </pre>
+  </form>
+  ``) # above, <form ...><textarea ... done to get specific spacing
+
+(def sample-trace-form-template
+  ``
+  <pre><u>generate a sample trace</u></pre>
+  <pre>
+  <form action="/check"
+        method="post"><input type="text"
+                             name="random"
+                             value="%s"/>
+  <input type="submit" value="generate"/>
+  </pre>
+  </form>
   ``)
 
 (defn start-handler
@@ -59,7 +74,10 @@
                       ``
                       event-links
                       "<hr>"))
-            (string/format form-template default-call)))
+            (string/format new-trace-form-template default-call)
+            "<hr>"
+            (string/format sample-trace-form-template "filter text")
+            ))
   #
   {:headers {"Content-type" "text/html"}
    :status 200
@@ -140,6 +158,39 @@
 
 ########################################################################
 
+(defn handle-random
+  [key-vals]
+  (def pattern (get key-vals "random"))
+  (def choice-path (tg/scan-with-random pattern))
+  (when (not (os/stat choice-path))
+    (break {:headers {"Content-type" "text/html"}
+            :status 200
+            :body (string "<pre>"
+                          "There was a problem.\n"
+                          "\n"
+                          "Chose a non-existent file: %s" choice-path
+                          "</pre>")}))
+  #
+  (def [success? result]
+    (protect (tg/gen-files (slurp choice-path) true)))
+  (when (not success?)
+    (break {:headers {"Content-type" "text/html"}
+            :status 200
+            :body (string "<pre>"
+                          "There was a problem.\n"
+                          "\n"
+                          result
+                          "</pre>")}))
+  #
+  {:headers {"Content-type" "text/html"}
+   :status 200
+   :body (string ``
+                 <pre><u>generated trace for events</u></pre>
+                 ``
+                 event-links)})
+
+########################################################################
+
 (defn handle-error
   [request]
   {:headers {"Content-type" "text/html"}
@@ -157,8 +208,13 @@
     (->> (get request :buffer)
          (peg/match http/query-string-grammar)
          first))
-  (if (has-key? key-vals "call")
+  (cond
+    (has-key? key-vals "call")
     (handle-call key-vals)
+    #
+    (has-key? key-vals "random")
+    (handle-random key-vals)
+    #
     (handle-error request)))
 
 ########################################################################

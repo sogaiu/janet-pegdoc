@@ -54,7 +54,7 @@
 
   With the `-t` or `--trace` option, generate trace files for
   `meg/match` using arguments contained in `file` or a file
-  selected by substring-matching a file name specified by 
+  selected by substring-matching a file name specified by
   `pattern`.  `file` should be a `.janet` file, which when
   evaluated, returns a tuple with values for each desired
   argument.  If `file` or `pattern` is not provided, some
@@ -131,19 +131,13 @@
       (if-let [arg (first rest)]
         (if (os/stat arg)
           arg
-          (let [results (tg/scan-for-files arg)
-                files (if (not (empty? results))
-                        results
-                        (do
-                          (printf "Did not match `%s`, going random..." arg)
-                          (tg/enum-samples)))]
-            (string tg/samples-root "/" (rnd/choose files))))
-        (string tg/samples-root "/" (rnd/choose (tg/enum-samples)))))
+          (tg/scan-with-random arg))
+        (tg/choose-random (tg/enum-samples))))
     (when (not (os/stat arg-file))
       (eprintf "Failed to find file: %s" arg-file)
       (os/exit 1))
     (printf "Selected file: %s" arg-file)
-    (tg/gen-files (slurp arg-file))
+    (tg/gen-files (slurp arg-file) false "pdoc-trace")
     (os/exit 0))
 
   # start web server

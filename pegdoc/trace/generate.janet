@@ -1,3 +1,4 @@
+(import ../random :as rnd)
 (import ./render :as r)
 
 (def samples-root
@@ -12,6 +13,18 @@
   [pattern]
   (filter |(string/find pattern $)
           (enum-samples)))
+
+(defn choose-random
+  [files]
+  (string samples-root "/" (rnd/choose files)))
+
+(defn scan-with-random
+  [pattern]
+  (let [results (scan-for-files pattern)
+        files (if (not (empty? results))
+                results
+                (enum-samples))]
+    (choose-random files)))
 
 (defn report
   [dir-path]
@@ -28,8 +41,9 @@
   (printf "* all events: %s" trace-log-path))
 
 (defn gen-files
-  [content &opt dir-path]
-  (default dir-path "pdoc-trace")
+  [content &opt force dir-path]
+  (default force false)
+  (default dir-path ".")
   (try
     (do
       (def [peg text start & args]
@@ -43,7 +57,16 @@
                  (not= :directory mode))
         (errorf "non-directory with name %s exists already" dir-path))
       #
-      (if stat
+      (cond
+        (nil? stat)
+        (do
+          (os/mkdir dir-path)
+          (assert (= :directory
+                     (os/stat dir-path :mode))
+                  (string/format "failed to arrange for trace directory: %s"
+                                 dir-path)))
+        #
+        (false? force)
         (do
           (def prmpt
             (string/format "Directory `%s` exists, overwrite contents? [y/N] "
@@ -51,13 +74,7 @@
           (def buf (getline prmpt))
           (when (not (string/has-prefix? "y" (string/ascii-lower buf)))
             (eprintf "Ok, bye!")
-            (break)))
-        (do
-          (os/mkdir dir-path)
-          (assert (= :directory
-                     (os/stat dir-path :mode))
-                  (string/format "failed to arrange for trace directory: %s"
-                                 dir-path))))
+            (break))))
       #
       (def old-dir (os/cwd))
       (defer (os/cd old-dir)
