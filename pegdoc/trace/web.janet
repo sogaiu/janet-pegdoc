@@ -9,13 +9,27 @@
 # https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/submit
 (def form-template
   ``
-  <form action="/check" method="post" name="call">
+  <pre><u>generate a new trace</u></pre>
   <pre>
-  meg/match call:
-  <textarea name="call" rows="5" cols="72">%s</textarea>
-  <input type="submit" value="generate trace"/>
+  <form action="/check"
+        method="post"
+        name="call"><textarea name="call" rows="5" cols="72">%s</textarea>
+  <input type="submit" value="generate"/>
   </pre>
   </form>
+  ``) # above, <form ...><textarea ... done to get specific spacing
+
+(def event-links
+  ``
+  <pre>
+  <a href="first.html">first</a>
+  </pre>
+  <pre>
+  <a href="last.html">last</a>
+  </pre>
+  <pre>
+  <a href="all.html">all</a>
+  </pre>
   ``)
 
 (defn start-handler
@@ -38,9 +52,18 @@
                "!")
     ``)
   #
+  (def body
+    (string (string/format form-template default-call)
+            (when (os/stat "first.html")
+              (string ``
+                      <hr>
+                      <pre><u>events from previous trace</u></pre>
+                      ``
+                      event-links))))
+  #
   {:headers {"Content-type" "text/html"}
    :status 200
-   :body (string/format form-template default-call)})
+   :body body})
 
 ########################################################################
 
@@ -57,15 +80,10 @@
   #
   {:headers {"Content-type" "text/html"}
    :status 200
-   :body (string "<pre>"
-                 "Trace generated successfully.\n"
-                 "\n"
-                 "Here are some starting points:\n"
-                 "\n"
-                 `<a href="/first.html">first event</a>` "\n"
-                 `<a href="/last.html">last event</a>` "\n"
-                 `<a href="/all.html">all events</a>` "\n"
-                 "</pre>")})
+   :body (string ``
+                 <pre><u>generated trace for events</u></pre>
+                 ``
+                 event-links)})
 
 (defn handle-call
   [key-vals]
