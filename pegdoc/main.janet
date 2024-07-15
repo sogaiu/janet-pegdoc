@@ -146,8 +146,7 @@
     (break (tw/serve)))
 
   # check if there was a peg special specified
-  (def special-fname
-    (ex/get-filename (first rest)))
+  (def special-fname (ex/get-filename (first rest)))
 
   # if no peg-special found and no options, show info about all specials
   (when (and (nil? special-fname)
@@ -194,8 +193,7 @@
     (os/exit 1))
 
   # XXX: could check for failure here
-  (def content
-    (slurp file-path))
+  (def content (slurp file-path))
 
   (when (or (and (opts :doc) (opts :usage))
             (and (nil? (opts :doc))
