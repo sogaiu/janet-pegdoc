@@ -53,13 +53,13 @@
     ``)
   #
   (def body
-    (string (string/format form-template default-call)
-            (when (os/stat "first.html")
+    (string (when (os/stat "first.html")
               (string ``
-                      <hr>
                       <pre><u>events from previous trace</u></pre>
                       ``
-                      event-links))))
+                      event-links
+                      "<hr>"))
+            (string/format form-template default-call)))
   #
   {:headers {"Content-type" "text/html"}
    :status 200
