@@ -245,7 +245,7 @@
   (default content default-call)
   (default dir "pdoc-trace")
   (default host "127.0.0.1")
-  (default port 8000)
+  (default port 7650)
   #
   (set default-call content)
   #
