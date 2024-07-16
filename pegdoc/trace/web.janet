@@ -8,13 +8,13 @@
 (def event-links
   ``
   <pre>
-  <a href="first.html">first</a>
+  <a href="first.html">first event</a>
   </pre>
   <pre>
-  <a href="last.html">last</a>
+  <a href="last.html">last event</a>
   </pre>
   <pre>
-  <a href="all.html">all</a>
+  <a href="all.html">all events</a>
   </pre>
   ``)
 
