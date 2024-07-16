@@ -6,6 +6,7 @@
    "--doc" "-d"
    "--help" "-h"
    "--quiz" "-q"
+   "--stdin" "-s"
    "--trace" "-t"
    "--usage" "-u"
    "--web" "-w"})

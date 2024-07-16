@@ -9,6 +9,7 @@
 (import ./show/doc :as doc)
 (import ./show/usages :as u)
 (import ./show/questions :as qu)
+(import ./tempdir :as td)
 (import ./trace/generate :as tg)
 (import ./trace/web :as tw)
 (import ./view :as view)
@@ -127,6 +128,12 @@
 
   # generate trace files
   (when (opts :trace)
+    (def temp-dir (td/mk-temp-dir "pdoc-trace-///"))
+    (when (opts :stdin)
+      (def content (file/read stdin :all))
+      (tg/gen-files-from-call-str content true temp-dir)
+      (os/exit 0))
+    #
     (def arg-file
       (if-let [arg (first rest)]
         (if (os/stat arg)
@@ -137,13 +144,20 @@
       (eprintf "Failed to find file: %s" arg-file)
       (os/exit 1))
     (printf "Selected file: %s" arg-file)
-    (tg/gen-files (slurp arg-file) false "pdoc-trace")
+    (tg/gen-files (slurp arg-file) false temp-dir)
     (os/exit 0))
 
   # start web server
   (when (opts :web)
+    (def content
+      (if (opts :stdin)
+        (file/read stdin :all)
+        nil))
+    (def port
+      (when-let [port-str (first rest)]
+        (scan-number port-str)))
     # expressing this way allows process to stay alive
-    (break (tw/serve)))
+    (break (tw/serve content nil nil port)))
 
   # check if there was a peg special specified
   (def special-fname (ex/get-filename (first rest)))

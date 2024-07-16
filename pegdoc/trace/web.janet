@@ -47,6 +47,14 @@
   </form>
   ``)
 
+(var default-call
+  ``
+  (meg/match ~(sequence "b" (capture "a") (argument 0))
+             "cba"
+             1
+             "!")
+  ``)
+
 (defn start-handler
   [request]
   # :route lacks the ?hi=ho parts, while :path has them
@@ -58,14 +66,6 @@
       (break {:headers {"Content-type" "text/html"}
               :status 200
               :body content})))
-  #
-  (def default-call
-    ``
-    (meg/match ~(sequence "b" (capture "a") (argument 0))
-               "cba"
-               1
-               "!")
-    ``)
   #
   (def body
     (string (when (os/stat "first.html")
@@ -116,7 +116,19 @@
                           "\n"
                           "call: " call-str "\n"
                           "</pre>")}))
-  # XXX: could check first part of call, but why?
+  #
+  (def callable-name (string (get call 0)))
+  (when (and (not= "peg/match" callable-name)
+             (not= "meg/match" callable-name))
+    (break {:headers {"Content-type" "text/html"}
+            :status 200
+            :body (string "<pre>"
+                          "There was a problem.\n"
+                          "Call was not to peg/match or meg/match:\n"
+                          "\n"
+                          "call was to: " callable-name
+                          "\n"
+                          "</pre>")}))
   #
   (def peg-form (get call 1))
   (def [peg-form-sucess? peg]
@@ -229,10 +241,13 @@
   (handler request))
 
 (defn serve
-  [&opt dir host port]
+  [&opt content dir host port]
+  (default content default-call)
   (default dir "pdoc-trace")
   (default host "127.0.0.1")
   (default port 8000)
+  #
+  (set default-call content)
   #
   (when (not (os/stat dir))
     (printf "Trying to create directory: %s" dir)
