@@ -11,6 +11,9 @@
 
 (defn scan-for-files
   [pattern]
+  (when (empty? pattern)
+    (break (enum-samples)))
+  #
   (filter |(string/find pattern $)
           (enum-samples)))
 
