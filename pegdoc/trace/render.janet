@@ -161,6 +161,20 @@
     #
     (errorf "unexpected event type for: %n" event)))
 
+(defn event-type
+  [event]
+  (cond
+    (has-key? event :entry)
+    :entry
+    #
+    (has-key? event :exit)
+    :exit
+    #
+    (has-key? event :error)
+    :error
+    #
+    (errorf "unexpected event type for: %n" event)))
+
 (defn frame-num
   [event]
   (get event :entry (get event :exit (get event :error))))
@@ -439,16 +453,63 @@
                      (drop 1 backtrace))
                "</pre>"))
 
+(defn count-digits
+  [num]
+  (if (zero? num)
+    1
+    (math/floor (+ (math/log10 num) 1))))
+
+(comment
+
+  (count-digits 1)
+  # =>
+  1
+
+  (count-digits 9)
+  # =>
+
+  (count-digits 10)
+  # =>
+  2
+
+  (count-digits 99)
+  # =>
+  2
+
+  (count-digits 100)
+  # =>
+  3
+
+  (count-digits 1000)
+  # =>
+  4
+
+  )
+
 (defn render-all-events
   [buf events]
+  # number of digits for the event number of the last event
+  (def max-digits (count-digits (length events)))
   (buffer/push buf
                "<pre><u>event log</u></pre>"
                "<pre>"
                ;(map |(let [frm-num (frame-num $)
                             evt-num (event-num $ frm-num events)
-                            peg (get $ :peg)]
-                        (string `<a href="` evt-num ".html" `">`
-                                frm-num `</a>`
+                            evt-type (event-type $)
+                            peg (get $ :peg)
+                            n-digits (count-digits frm-num)
+                            zero-pad (string/repeat "0"
+                                                    (- max-digits n-digits))
+                            filler (string/repeat " " 2)
+                            link (string `<a href="` evt-num ".html" `">`
+                                         zero-pad frm-num
+                                         `</a>`)]
+                        (string (if (= :entry evt-type) "> " "  ")
+                                link
+                                (cond
+                                  (= :exit evt-type) " >"
+                                  (= :error evt-type) " E"
+                                  "  ")
                                 " " (escape (string/format "%n" peg))
                                 "\n"))
                      events)
