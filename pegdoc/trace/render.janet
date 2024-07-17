@@ -187,39 +187,89 @@
   [event events]
   (deep= event (last events)))
 
+(def js
+  ``
+  <script>
+  function handleKbdEvent(event) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+    const keyName = event.key;
+
+    if (keyName === "a") {
+      document.getElementById('all').click();
+    } else if (keyName === "s") {
+      document.getElementById('start').click();
+    } else if (keyName === "t") {
+      document.getElementById('entry').click();
+    } else if (keyName === "p") {
+      document.getElementById('prev').click();
+    } else if (keyName === "n") {
+      document.getElementById('next').click();
+    } else if (keyName === "x") {
+      document.getElementById('exit').click();
+    } else if (keyName === "e") {
+      document.getElementById('end').click();
+    } else {
+      //
+    }
+
+    console.log(event);
+  }
+  // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+  document.addEventListener("keydown", handleKbdEvent);
+  </script>
+  ``)
+
+(defn render-scripts
+  [buf]
+  (buffer/push buf js))
+
 (defn render-nav
   [buf beg entry prv nxt exit end]
   (buffer/push buf "<pre>")
-  (buffer/push buf `<a href="` all-events-filename `">[all]</a>`)
+  (buffer/push buf
+               `<a id="all" href="` all-events-filename
+               `">[<font color="white">a</font>ll]</a>`)
   (buffer/push buf " ")
   #
   (if beg
-    (buffer/push buf `<a href="` (string beg) ".html" `">[start]</a>`)
+    (buffer/push buf
+                 `<a id="start" href="` (string beg) ".html"
+                 `">[<font color="white">s</font>tart]</a>`)
     (buffer/push buf "[start]"))
   (buffer/push buf " ")
   #
   (if entry
-    (buffer/push buf `<a href="` (string entry) ".html" `">[entry]</a>`)
+    (buffer/push buf
+                 `<a id="entry" href="` (string entry) ".html"
+                 `">[en<font color="white">t</font>ry]</a>`)
     (buffer/push buf "[entry]"))
   (buffer/push buf " ")
   #
   (if prv
-    (buffer/push buf `<a href="` (string prv) ".html" `">[prev]</a>`)
+    (buffer/push buf
+                 `<a id="prev" href="` (string prv) ".html"
+                 `">[<font color="white">p</font>rev]</a>`)
     (buffer/push buf "[prev]"))
   (buffer/push buf " ")
   #
   (if nxt
-    (buffer/push buf `<a href="` (string nxt) ".html" `">[next]</a>`)
+    (buffer/push buf
+                 `<a id="next" href="` (string nxt) ".html"
+                 `">[<font color="white">n</font>ext]</a>`)
     (buffer/push buf "[next]"))
   (buffer/push buf " ")
   #
   (if exit
-    (buffer/push buf `<a href="` (string exit) ".html" `">[exit]</a>`)
+    (buffer/push buf
+                 `<a id="exit" href="` (string exit) ".html"
+                 `">[e<font color="white">x</font>it]</a>`)
     (buffer/push buf "[exit]"))
   (buffer/push buf " ")
   #
   (if end
-    (buffer/push buf `<a href="` (string end) ".html" `">[end]</a>`)
+    (buffer/push buf
+                 `<a id="end" href="` (string end) ".html"
+                 `">[<font color="white">e</font>nd]</a>`)
     (buffer/push buf "[end]"))
   (buffer/push buf "</pre>"))
 
@@ -567,7 +617,13 @@
   (def exit-or-error
     (when (has-key? event :entry)
       (find-exit-or-error event events)))
-  #
+
+  (buffer/push buf "<head>\n")
+  (render-scripts buf)
+  (buffer/push buf "</head>\n")
+
+  (buffer/push buf "<body>\n")
+
   (render-nav buf beg entry prv nxt exit-or-error end)
   (buffer/push buf "<hr>")
 
@@ -581,7 +637,9 @@
   (buffer/push buf "<hr>")
 
   (render-backtrace buf stack events)
-  #
+
+  (buffer/push buf "</body>\n")
+
   buf)
 
 ########################################################################
