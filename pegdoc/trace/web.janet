@@ -244,8 +244,10 @@
   [&opt content dir host port]
   (default content default-call)
   (default dir "pdoc-trace")
+  # https://superuser.com/a/949522
   (default host "127.0.0.1")
-  (default port 7650)
+  # choose some unused port
+  (default port 0)
   #
   (set default-call content)
   #
@@ -257,5 +259,13 @@
   #
   (printf "Changing working directory to: %s" dir)
   (os/cd dir)
-  (printf "Trying to start server at http://%s:%d" host port)
-  (http/server router-handler host port))
+  # replicating bits of net/server and http/server to access actual
+  # host and port information
+  (def s (net/listen host port))
+  (def [actual-host actual-port] (net/localname s))
+  (printf "Trying to start server at http://%s:%d" actual-host actual-port)
+  (defn handler
+    [conn]
+    (http/server-handler conn router-handler))
+  (ev/go (fn [] (net/accept-loop s handler))))
+
