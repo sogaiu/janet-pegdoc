@@ -498,11 +498,12 @@
                             evt-type (event-type $)
                             peg (get $ :peg)
                             n-digits (count-digits frm-num)
-                            zero-pad (string/repeat "0"
-                                                    (- max-digits n-digits))
+                            pad (string/repeat " "
+                                               (- max-digits n-digits))
                             filler (string/repeat " " 2)
-                            link (string `<a href="` evt-num ".html" `">`
-                                         zero-pad frm-num
+                            link (string pad
+                                         `<a href="` evt-num ".html" `">`
+                                         frm-num
                                          `</a>`)]
                         (string (if (= :entry evt-type) "> " "  ")
                                 link
