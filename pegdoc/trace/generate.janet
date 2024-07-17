@@ -76,7 +76,11 @@
   )
 
 (defn gen-files-inner
-  [peg text start force dir-path & args]
+  [opts peg text start & args]
+  (def {:force force
+        :dir-path dir-path
+        :text-report text-report} opts)
+  (default text-report true)
   (def stat (os/stat dir-path))
   (def mode (get stat :mode))
   (when (and stat
@@ -108,34 +112,43 @@
     (os/cd dir-path)
     (r/render peg text start ;args))
   #
-  (report dir-path))
+  (when text-report
+    (report dir-path)))
 
 (defn gen-files
-  [content &opt force dir-path]
+  [content &opt force dir-path text-report]
   (default force false)
   (default dir-path ".")
+  (default text-report false)
   (try
     (do
       (def [peg text start & args]
         (eval-string content))
       (default start 0)
       (default args [])
-      (gen-files-inner peg text start force dir-path ;args))
+      (gen-files-inner {:force force
+                        :dir-path dir-path
+                        :text-report text-report}
+                       peg text start ;args))
     ([e f]
       (eprintf "problem creating trace files using: %s" content)
       (propagate e f))))
 
 (defn gen-files-from-call-str
-  [call-str &opt force dir-path]
+  [call-str &opt force dir-path text-report]
   (default force true)
   (default dir-path ".")
+  (default text-report false)
   (try
     (do
       (def [peg text start & args]
         (extract call-str))
       (default start 0)
       (default args [])
-      (gen-files-inner peg text start force dir-path ;args))
+      (gen-files-inner {:force force
+                        :dir-path dir-path
+                        :text-report text-report}
+                       peg text start ;args))
     ([e f]
       (eprintf "problem creating trace files using: %s" call-str)
       (propagate e f))))

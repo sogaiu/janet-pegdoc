@@ -131,7 +131,7 @@
     (def temp-dir (td/mk-temp-dir "pdoc-trace-///"))
     (when (opts :stdin)
       (def content (file/read stdin :all))
-      (tg/gen-files-from-call-str content true temp-dir)
+      (tg/gen-files-from-call-str content true temp-dir true)
       (os/exit 0))
     #
     (def arg-file
@@ -144,7 +144,7 @@
       (eprintf "Failed to find file: %s" arg-file)
       (os/exit 1))
     (printf "Selected file: %s" arg-file)
-    (tg/gen-files (slurp arg-file) false temp-dir)
+    (tg/gen-files (slurp arg-file) false temp-dir true)
     (os/exit 0))
 
   # start web server
