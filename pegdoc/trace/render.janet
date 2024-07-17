@@ -733,8 +733,11 @@
     (setdyn :meg-trace of)
     (setdyn :meg-color false)
 
-    (def [peg-success? result]
-      (protect (meg/match peg text start ;args)))
+    (try
+      (meg/match peg text start ;args)
+      ([e]
+        (eprin "Match call resulted in an error: ")
+        (eprintf e)))
 
     (file/seek of :set 0)
 

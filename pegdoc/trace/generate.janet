@@ -118,9 +118,9 @@
       (default start 0)
       (default args [])
       (gen-files-inner peg text start force dir-path ;args))
-    ([e]
+    ([e f]
       (eprintf "problem creating trace files using: %s" content)
-      (eprintf e))))
+      (propagate e f))))
 
 (defn gen-files-from-call-str
   [call-str &opt force dir-path]
@@ -133,7 +133,7 @@
       (default start 0)
       (default args [])
       (gen-files-inner peg text start force dir-path ;args))
-    ([e]
+    ([e f]
       (eprintf "problem creating trace files using: %s" call-str)
-      (eprintf e))))
+      (propagate e f))))
 
