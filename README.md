@@ -253,7 +253,6 @@ Get basic help.
 
 ```
 Usage: pdoc [option] [peg-special]
-       pdoc [-t|--trace] [file|pattern]
 
 View Janet PEG information.
 
@@ -262,8 +261,6 @@ View Janet PEG information.
   -d, --doc [<peg-special>]    show doc
   -q, --quiz [<peg-special>]   show quiz question
   -u, --usage [<peg-special>]  show usage
-
-  -t, --trace [file|pattern]   generate trace files
 
   --bash-completion            output bash-completion bits
   --fish-completion            output fish-completion bits
@@ -286,20 +283,6 @@ chosen one.
 With the `-u` or `--usage` option, show usages for
 specified PEG special, or if none specified, for a randomly
 chosen one.
-
-With the `-t` or `--trace` option, generate trace files for
-`meg/match` using arguments contained in `file` or a file
-selected by substring-matching a file name specified by
-`pattern`.  `file` should be a `.janet` file, which when
-evaluated, returns a tuple with values for each desired
-argument.  If `file` or `pattern` is not provided, some
-appropriate content will be arranged for.  Generated files
-will end up in a subdirectory.  `meg/match`'s signature is
-the same as that of `peg/match`.
-
-With the `-w` or `--web` option, start a local web server
-that provides access to the tracing functionality described
-for the `-t` or `--trace` option.
 
 With no arguments, lists all PEG specials.
 
@@ -368,7 +351,7 @@ Below are some hints about where such locations might be:
 ## Credits
 
 Portions of tests and the documentation come from Janet and the
-janet-lang.org website.  In addition, spork/http is included.
+janet-lang.org website.
 
 Thus the following license applies to at least those portions.
 

@@ -9,16 +9,11 @@
 (import ./show/doc :as doc)
 (import ./show/usages :as u)
 (import ./show/questions :as qu)
-(import ./tempdir :as td)
-(import ./trace/generate :as tg)
-(import ./trace/web :as tw)
 (import ./view :as view)
 
 (def usage
   ``
   Usage: pdoc [option] [peg-special]
-         pdoc [-t|--trace] [file|pattern]
-         pdoc [-w|--web]
 
   View Janet PEG information.
 
@@ -27,9 +22,6 @@
     -d, --doc [<peg-special>]    show doc
     -q, --quiz [<peg-special>]   show quiz question
     -u, --usage [<peg-special>]  show usage
-
-    -t, --trace [file|pattern]   generate trace files
-    -w, --web                    start web ui for tracing
 
     --bash-completion            output bash-completion bits
     --fish-completion            output fish-completion bits
@@ -52,20 +44,6 @@
   With the `-u` or `--usage` option, show usages for
   specified PEG special, or if none specified, for a randomly
   chosen one.
-
-  With the `-t` or `--trace` option, generate trace files for
-  `meg/match` using arguments contained in `file` or a file
-  selected by substring-matching a file name specified by
-  `pattern`.  `file` should be a `.janet` file, which when
-  evaluated, returns a tuple with values for each desired
-  argument.  If `file` or `pattern` is not provided, some
-  appropriate content will be arranged for.  Generated files
-  will end up in a subdirectory.  `meg/match`'s signature is
-  the same as that of `peg/match`.
-
-  With the `-w` or `--web` option, start a local web server
-  that provides access to the tracing functionality described
-  for the `-t` or `--trace` option.
 
   With no arguments, lists all PEG specials.
 
@@ -125,39 +103,6 @@
       (os/exit 1))
     (doc/all-names (ex/all-names file-names))
     (os/exit 0))
-
-  # generate trace files
-  (when (opts :trace)
-    (def temp-dir (td/mk-temp-dir "pdoc-trace-///"))
-    (when (opts :stdin)
-      (def content (file/read stdin :all))
-      (tg/gen-files-from-call-str content true temp-dir true)
-      (os/exit 0))
-    #
-    (def arg-file
-      (if-let [arg (first rest)]
-        (if (os/stat arg)
-          arg
-          (tg/scan-with-random arg))
-        (tg/choose-random (tg/enum-samples))))
-    (when (not (os/stat arg-file))
-      (eprintf "Failed to find file: %s" arg-file)
-      (os/exit 1))
-    (printf "Selected file: %s" arg-file)
-    (tg/gen-files (slurp arg-file) false temp-dir true)
-    (os/exit 0))
-
-  # start web server
-  (when (opts :web)
-    (def content
-      (if (opts :stdin)
-        (file/read stdin :all)
-        nil))
-    (def port
-      (when-let [port-str (first rest)]
-        (scan-number port-str)))
-    # expressing this way allows process to stay alive
-    (break (tw/serve content nil nil port)))
 
   # check if there was a peg special specified
   (def special-fname (ex/get-filename (first rest)))
