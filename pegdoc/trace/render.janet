@@ -540,10 +540,21 @@
 
   )
 
+(defn max-frame-num
+  [events]
+  (assert (not (empty? events)) "events should be non-empty")
+  (var max-frm-num nil)
+  (each evt events
+    (def frm-num (frame-num evt))
+    (when (or (nil? max-frm-num)
+              (> frm-num max-frm-num))
+      (set max-frm-num frm-num)))
+  #
+  max-frm-num)
+
 (defn render-all-events
   [buf events]
-  # number of digits for the event number of the last event
-  (def max-digits (count-digits (length events)))
+  (def max-digits (count-digits (max-frame-num events)))
   (buffer/push buf
                "<pre><u>event log</u></pre>"
                "<pre>"
