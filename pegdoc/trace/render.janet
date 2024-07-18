@@ -100,12 +100,12 @@
   )
 
 (defn entry-event-num
-  [frame-num events]
+  [frm-num events]
   (def event (find |(when (has-key? $ :entry)
-                      (= (get $ :entry) frame-num))
+                      (= (get $ :entry) frm-num))
                    events))
   (assert event
-          (string/format "failed to find event for frame-num: %d" frame-num))
+          (string/format "failed to find event for frm-num: %d" frm-num))
   #
   (get event :event-num))
 
@@ -119,12 +119,12 @@
   )
 
 (defn exit-event-num
-  [frame-num events]
+  [frm-num events]
   (def event (find |(when (has-key? $ :exit)
-                      (= (get $ :exit) frame-num))
+                      (= (get $ :exit) frm-num))
                    events))
   (assert event
-          (string/format "failed to find event for frame-num: %d" frame-num))
+          (string/format "failed to find event for frm-num: %d" frm-num))
   #
   (get event :event-num))
 
@@ -138,26 +138,26 @@
   )
 
 (defn error-event-num
-  [frame-num events]
+  [frm-num events]
   (def event (find |(when (has-key? $ :error)
-                      (= (get $ :error) frame-num))
+                      (= (get $ :error) frm-num))
                    events))
   (assert event
-          (string/format "failed to find event for frame-num: %d" frame-num))
+          (string/format "failed to find event for frm-num: %d" frm-num))
   #
   (get event :event-num))
 
 (defn event-num
-  [event frame-num events]
+  [event frm-num events]
   (cond
     (has-key? event :entry)
-    (entry-event-num frame-num events)
+    (entry-event-num frm-num events)
     #
     (has-key? event :exit)
-    (exit-event-num frame-num events)
+    (exit-event-num frm-num events)
     #
     (has-key? event :error)
-    (error-event-num frame-num events)
+    (error-event-num frm-num events)
     #
     (errorf "unexpected event type for: %n" event)))
 
