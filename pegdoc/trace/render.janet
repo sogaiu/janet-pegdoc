@@ -511,6 +511,10 @@
 
 (comment
 
+  (count-digits 0)
+  # =>
+  1
+
   (count-digits 1)
   # =>
   1
