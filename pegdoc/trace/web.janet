@@ -5,6 +5,23 @@
 
 ########################################################################
 
+(defn prob-response
+  [message]
+  {:headers {"Content-type" "text/html"}
+   :status 200
+   :body (string "<pre>"
+                 "<u>There was a problem.</u>\n\n"
+                 message
+                 "</pre>")})
+
+(defn ok-response
+  [body]
+  {:headers {"Content-type" "text/html"}
+   :status 200
+   :body body})
+
+########################################################################
+
 (def event-links
   ``
   <pre>
@@ -63,11 +80,9 @@
     (def filename (string/slice route 1))
     (when (os/stat filename)
       (def content (slurp filename))
-      (break {:headers {"Content-type" "text/html"}
-              :status 200
-              :body content})))
+      (break (ok-response content))))
   #
-  (def body
+  (ok-response
     (string (when (os/stat "first.html")
               (string ``
                       <pre><u>events from previous trace</u></pre>
@@ -76,12 +91,7 @@
                       "<hr>"))
             (string/format new-trace-form-template default-call)
             "<hr>"
-            (string/format sample-trace-form-template "filter text")
-            ))
-  #
-  {:headers {"Content-type" "text/html"}
-   :status 200
-   :body body})
+            (string/format sample-trace-form-template "filter text"))))
 
 ########################################################################
 
@@ -91,57 +101,37 @@
   (def [r-success? results]
     (protect (r/render peg text start ;args)))
   (when (not r-success?)
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "There was a problem when rendering:\n\n"
-                          results)}))
+    (break (prob-response
+             (string "Rendering failed:\n\n"
+                     results "\n"))))
   #
-  {:headers {"Content-type" "text/html"}
-   :status 200
-   :body (string ``
-                 <pre><u>generated trace for events</u></pre>
-                 ``
-                 event-links)})
+  (ok-response
+    (string "<pre><u>generated trace for events</u></pre>"
+            event-links)))
 
 (defn handle-call
   [key-vals]
   (def call-str (get key-vals "call"))
   (def [call-success? call] (protect (parse call-str)))
   (when (not call-success?)
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "<pre>"
-                          "There was a problem.\n"
-                          "Failed to extract arguments from call:\n"
-                          "\n"
-                          "call: " call-str "\n"
-                          "</pre>")}))
+    (break (prob-response
+             (string "Failed to extract arguments from call:\n\n"
+                     "call: " call-str "\n"))))
   #
   (def callable-name (string (get call 0)))
   (when (and (not= "peg/match" callable-name)
              (not= "meg/match" callable-name))
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "<pre>"
-                          "There was a problem.\n"
-                          "Call was not to peg/match or meg/match:\n"
-                          "\n"
-                          "call was to: " callable-name
-                          "\n"
-                          "</pre>")}))
+    (break (prob-response
+             (string "Call was not to peg/match or meg/match:\n\n"
+                     "call was to: " callable-name "\n"))))
   #
   (def peg-form (get call 1))
   (def [peg-form-sucess? peg]
     (protect (eval-string (string/format "%n" peg-form))))
   (when (not peg-form-sucess?)
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "<pre>"
-                          "There was a problem.\n"
-                          "The peg argument was not correct, got:\n"
-                          "\n"
-                          "peg: " (string/format "%m" peg-form) "\n"
-                          "</pre>")}))
+    (break (prob-response
+             (string "The peg argument was not correct, got:\n\n"
+                     "peg: " (string/format "%m" peg-form) "\n"))))
   #
   (def [peg-success? result] (protect (m/analyze peg)))
   (def text (get call 2 ""))
@@ -154,17 +144,12 @@
                   text (string? text)
                   start (number? start)
                   args (array? args)))
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "<pre>"
-                          "There was a problem.\n"
-                          "Some argument was not correct, got:\n"
-                          "\n"
-                          "peg: " (string/format "%m" peg) "\n"
-                          "text: " `"` (string/format "%s" text) `"` "\n"
-                          "start: " (string/format "%d" start) "\n"
-                          "args: " (string/format "%n" args) "\n"
-                          "</pre>")}))
+    (break (prob-response
+             (string "Some argument was not correct, got:\n\n"
+                     "peg: " (string/format "%m" peg) "\n"
+                     "text: " `"` (string/format "%s" text) `"` "\n"
+                     "start: " (string/format "%d" start) "\n"
+                     "args: " (string/format "%n" args) "\n"))))
   #
   (render-results peg text start ;args))
 
@@ -175,42 +160,28 @@
   (def pattern (get key-vals "random"))
   (def choice-path (tg/scan-with-random pattern))
   (when (not (os/stat choice-path))
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "<pre>"
-                          "There was a problem.\n"
-                          "\n"
-                          "Chose a non-existent file: %s" choice-path
-                          "</pre>")}))
+    (break (prob-response
+             (string "Chose a non-existent file:\n\n"
+                     "choice-path: %s" choice-path "\n"))))
   #
   (def [success? result]
     (protect (tg/gen-files (slurp choice-path) true)))
   (when (not success?)
-    (break {:headers {"Content-type" "text/html"}
-            :status 200
-            :body (string "<pre>"
-                          "There was a problem.\n"
-                          "\n"
-                          result
-                          "</pre>")}))
+    (break (prob-response
+             (string "Generating files failed:\n\n"
+                     result "\n"))))
   #
-  {:headers {"Content-type" "text/html"}
-   :status 200
-   :body (string ``
-                 <pre><u>generated trace for events</u></pre>
-                 ``
-                 event-links)})
+  (ok-response
+    (string "<pre><u>generated trace for events</u></pre>"
+            event-links)))
 
 ########################################################################
 
 (defn handle-error
   [request]
-  {:headers {"Content-type" "text/html"}
-   :status 200
-   :body (string "<pre>"
-                 "Unexpected submission\n"
-                 (string/format "%n" request)
-                 "</pre>")})
+  (prob-response
+    (string "Unexpected submission\n\n"
+            (string/format "%n" request) "\n")))
 
 ########################################################################
 
