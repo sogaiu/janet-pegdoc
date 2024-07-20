@@ -54,15 +54,17 @@
 
 (defn choose-random-special
   [file-names]
-  (let [all-idx (index-of "0.all-the-names.janet" file-names)]
-    (when (not all-idx)
-      (errorf "Unexpected failure to find file with all the names: %M"
-              file-names))
-    (def file-name
-      (rnd/choose (array/remove file-names all-idx)))
-    # return name without extension
-    (string/slice file-name 0
-                  (last (string/find-all "." file-name)))))
+  (def new-names (sort file-names))
+  (each r-name ["0.all-the-names.janet" "0.compile.janet"]
+    (def r-idx (index-of r-name new-names))
+    (when (not r-idx)
+      (errorf "Unexpected failure to find %s in: %n" r-name new-names))
+    (array/remove new-names r-idx))
+  #
+  (def file-name (rnd/choose new-names))
+  # return name without extension
+  (string/slice file-name 0
+                (last (string/find-all "." file-name))))
 
 (defn main
   [& argv]
