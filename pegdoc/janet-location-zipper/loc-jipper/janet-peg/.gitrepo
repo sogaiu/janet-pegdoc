@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/sogaiu/janet-peg
+	branch = master
+	commit = ba5a490f8a3ec0e4afdc72b5a7e65926dbe38ea5
+	parent = f78bc9a227048e4eeead65918d3068549bc0a9fd
+	method = merge
+	cmdver = 0.4.9

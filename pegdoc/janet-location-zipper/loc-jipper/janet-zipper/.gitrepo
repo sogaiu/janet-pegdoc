@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/sogaiu/janet-zipper
+	branch = master
+	commit = 5f0a9523f477bb13606046929273c6bbbeb3b701
+	parent = c3ae7c74f4d0dfc92c4b60507c4622c66e77cb2a
+	method = merge
+	cmdver = 0.4.9
