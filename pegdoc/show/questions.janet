@@ -1,5 +1,5 @@
 (import ../highlight/highlight :as hl)
-(import ../jandent/indent)
+(import ../vendor/jandent/indent)
 (import ../parse/question :as qu)
 (import ../parse/tests :as tests)
 (import ../random :as rnd)
