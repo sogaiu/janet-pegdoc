@@ -1,5 +1,5 @@
 (import ./color :prefix "")
-(import ./grammar :prefix "")
+(import ../janet-peg/janet-peg/grammar :prefix "")
 (import ./mono :prefix "")
 (import ./rgb :prefix "")
 (import ./theme :prefix "")

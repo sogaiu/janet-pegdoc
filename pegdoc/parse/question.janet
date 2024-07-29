@@ -1,4 +1,4 @@
-(import ./location :as l)
+(import ../janet-peg/janet-peg/location :as l)
 (import ./zipper :as j)
 (import ./loc-jipper :as j)
 (import ../random :as rnd)
