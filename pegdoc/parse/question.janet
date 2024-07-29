@@ -1,5 +1,5 @@
 (import ../janet-peg/janet-peg/location :as l)
-(import ./zipper :as j)
+(import ../janet-zipper/janet-zipper/zipper :as j)
 (import ../janet-location-zipper/loc-jipper :as j)
 (import ../random :as rnd)
 (import ./specials :as sp)
