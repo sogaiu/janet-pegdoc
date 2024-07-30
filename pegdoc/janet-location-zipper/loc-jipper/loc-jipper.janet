@@ -57,7 +57,7 @@
   #
   (defn make-node
     [a-node children]
-    [(first a-node) @{} ;children])
+    [(first a-node) (get a-node 1) ;children])
   #
   (z/zipper tree
             :branch? branch?
