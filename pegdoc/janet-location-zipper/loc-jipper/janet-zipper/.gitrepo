@@ -4,9 +4,9 @@
 ; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/sogaiu/janet-zipper
+	remote = ~/src/janet-zipper
 	branch = master
-	commit = 5f0a9523f477bb13606046929273c6bbbeb3b701
-	parent = c3ae7c74f4d0dfc92c4b60507c4622c66e77cb2a
+	commit = 327ce087f2de667cda3de7f6b8b64276ab7d8ae0
+	parent = 9adc4f55ce14648402cc5198dcc54b507bec0ca8
 	method = merge
 	cmdver = 0.4.9

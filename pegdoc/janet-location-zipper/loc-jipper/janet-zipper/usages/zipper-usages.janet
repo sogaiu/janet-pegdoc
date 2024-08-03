@@ -1,5 +1,97 @@
 (import ../janet-zipper/zipper :as z)
 
+(comment
+
+  (z/s/butlast [])
+  # =>
+  nil
+
+  (z/s/butlast @[])
+  # =>
+  nil
+
+  (z/s/butlast [:a :b :c])
+  # =>
+  [:a :b]
+
+  (z/s/butlast @[:a])
+  # =>
+  @[]
+
+  )
+
+(comment
+
+  (z/s/rest [])
+  # =>
+  nil
+
+  (z/s/rest @[])
+  # =>
+  nil
+
+  (z/s/rest [:a])
+  # =>
+  []
+
+  (z/s/rest [:a :b])
+  # =>
+  [:b]
+
+  (z/s/rest @[:a :b])
+  # =>
+  @[:b]
+
+  (z/s/rest @[:a :b :c])
+  # =>
+  @[:b :c]
+
+  )
+
+(comment
+
+  (z/s/tuple-push [:a] :b :c)
+  # =>
+  [:a :b :c]
+
+  (z/s/tuple-push [] :a)
+  # =>
+  [:a]
+
+  )
+
+(comment
+
+  (z/s/to-entries {:a 1})
+  # =>
+  @[[:a 1]]
+
+  (z/s/to-entries @{:a 1 :b 2})
+  # =>
+  @[[:a 1] [:b 2]]
+
+  (z/s/to-entries @{:a 1})
+  # =>
+  @[[:a 1]]
+
+  (z/s/to-entries @{})
+  # =>
+  @[]
+
+  )
+
+(comment
+
+  (z/s/first-rest-maybe-all [:a])
+  # =>
+  [:a [] [:a]]
+
+  (z/s/first-rest-maybe-all @[:a :b])
+  # =>
+  [:a @[:b] @[:a :b]]
+
+  )
+
 # zipper
 (comment
 
