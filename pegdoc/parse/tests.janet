@@ -309,6 +309,8 @@
   #
   [test-expr-zloc expected-expr-zloc])
 
+# XXX: new content from here
+
 (defn extract-tests-from-comment-zloc
   [comment-zloc]
   # move into comment block
