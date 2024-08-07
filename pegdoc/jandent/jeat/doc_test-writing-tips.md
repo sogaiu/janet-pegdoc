@@ -1,15 +1,15 @@
-# Usage / Test Writing Tips
+# Test Writing Tips
 
 ## Samples
 
-The sample repositories mentioned in the README contain numerous
-usage/test examples.  Examining the `(comment ...)` portions of the
-sample repositories might be helpful in getting a sense of typical
-usage.
+The [sample repositories](./doc_samples.md) alluded to in the README
+contain numerous test examples.  Examining the `(comment ...)`
+portions of some of the files in the sample repositories might be
+helpful in getting a sense of typical usage.
 
 ## Basics
 
-As mentionined in the README, the basic form is:
+The basic form is:
 
 ```janet
 (comment
@@ -21,19 +21,22 @@ As mentionined in the README, the basic form is:
   )
 ```
 
-Within a comment block, express a usage/test as a triple of:
+Within a comment block, express a(t least one) test as a triple of:
 
 * a form to test
-* a usage/test indicator
+* a test indicator
 * a form representing an expected value
 
-Thus, `(- 1 1)` is a form to be tested, `# =>` is a usage/test indicator,
-and `0` expresses that `0` is the expected value.
+Thus:
 
-## Multiple Usages/Tests Per `comment`
+* `(- 1 1)` is a form to be tested,
+* `# =>` is a test indicator, and
+* `0` expresses that `0` is the expected value
 
-More than one triple (comment block usage/test) can be placed in a
-comment block.  For example, for the following:
+## Multiple Tests Per `comment`
+
+More than one triple (comment block test) can be placed in a comment
+block.  For example, for the following:
 
 ```janet
 (comment
@@ -54,7 +57,7 @@ two tests will be created and executed.
 ## Non-Tests Within `comment`
 
 It's also fine to put other forms in the comment block, all such forms
-will be included in tests.  For example, in the following:
+may be evaluated during testing.  For example, in the following:
 
 ```janet
 (comment
@@ -70,9 +73,9 @@ will be included in tests.  For example, in the following:
 
 `(def a 1)` will be executed during testing.
 
-However, if a comment block has no usages/tests (i.e. no expected
-values indicated), the forms within the comment block will NOT be
-executed.  Thus, for the following:
+However, if a comment block has no tests (i.e. no expected values
+indicated), the forms within the comment block will NOT be executed.
+Thus, for the following:
 
 ```janet
 (comment
@@ -87,7 +90,9 @@ NOT be executed.  One of the reasons for this behavior is to
 prevent pre-existing comment blocks from having unintentional
 side-effects.
 
-## Caveat Regarding `()`
+## Caveats
+
+### Regarding `()`
 
 Use `'()` or `[]` instead of `()` in some places when expressing
 expected values that are tuples, e.g.
@@ -116,10 +121,40 @@ not:
 This notational rule is necessary because using `()` implies a call
 of some sort.
 
-## Caveat Regarding `marshal` / `unmarshal`
+### Regarding `def` and friends
 
-The expressions in each usage/test must yield values that can be used
-with Janet's `marshal`.  (The reason for this limitation is because
+A `def` form will NOT work as "a form to test".  For example:
+
+```janet
+(comment
+
+  (def a 1)
+  # =>
+  1
+
+  )
+```
+
+is not valid.
+
+The following will work though, so please use it (or similar) instead:
+
+```janet
+(comment
+
+  (def a 1)
+
+  a
+  # =>
+  1
+
+  )
+```
+
+### Regarding `marshal` / `unmarshal`
+
+The expressions in each test must yield values that can be used with
+Janet's `marshal`.  (The reason for this limitation is because
 `marshal` / `unmarshal` are used to save and restore test results
 which are aggregated to produce an overall summary.)
 
