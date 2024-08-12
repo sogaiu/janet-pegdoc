@@ -299,14 +299,26 @@ relevant shell:
 * `--zsh-completion`
 
 Put the resulting output in a location appropriate for the shell in
-use.
+use.  Something along the lines of:
 
-Below are some hints about where such locations might be:
+* `bash` -
+    put output in file named `pdoc` in the directory at
+    `~/.local/share/bash-completion/complete/`
+
+* `fish` -
+    put output in file named `pdoc.fish` in the directory at
+    `~/.config/fish/completions/`
+
+* `zsh` -
+    put output in file named `_pdoc` and put it in a directory
+    that's on your `fpath`
+
+Below are some links to resources that are probably much better than the bits above:
 
 * [bash](https://github.com/scop/bash-completion/blob/master/README.md#faq) --
   look for `Where should I install my own local completions?`
 * [fish](https://fishshell.com/docs/current/completions.html#where-to-put-completions)
-* [zsh](https://zsh.sourceforge.io/Doc/Release/Completion-System.html) -- good luck :P
+* [zsh](https://zsh.sourceforge.io/Doc/Release/Completion-System.html) -- good luck...just kidding, see [this](https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org) instead.
 
 ## Use from REPL
 

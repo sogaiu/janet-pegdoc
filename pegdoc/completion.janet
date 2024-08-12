@@ -21,11 +21,14 @@
 
 (def zsh-completion
   ``
-  _pdoc_specials() {
+  #compdef pdoc
+
+  _pdoc() {
       local matches=(`pdoc --raw-all`)
       compadd -a matches
   }
-  compdef _pdoc_specials pdoc
+  
+  _pdoc "$@"
   ``)
 
 (defn maybe-handle-dump-completion
