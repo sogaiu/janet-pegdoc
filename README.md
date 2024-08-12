@@ -23,46 +23,6 @@ jpm install
 In either case, success should lead to the command `pdoc` being
 available on `PATH` and a `pegdoc` directory under `JANET_PATH`.
 
-## Use from REPL
-
-There is a macro named `pdoc` (a bit like the built in `doc` macro)
-that can be used from the REPL to look up PEG special documentation.
-
-One way to use it is to start `janet` like:
-
-```
-janet -l pegdoc
-```
-
-Then at the REPL:
-
-```
-Janet 1.32.1-11d7af3f linux/x64/gcc - '(doc)' for help
-repl:1:> (pdoc if)
-
-
-    peg special
-
-    (if cond patt)
-
-    Tries to match patt only if cond matches as well.
-
-    cond will not produce any captures.
-
-nil
-```
-
-Alternatively, evaluate `(use pegdoc)` before invoking `(pdoc ...)`.
-
-Setting up one's user profile appropriately may be another way to make
-`pdoc` available (see `-R` and/or `JANET_PROFILE` info in the janet(1)
-manual page for hints).
-
-Like the `doc` macro, `pdoc` can also be invoked with a string (or no
-argument) to produce a set of search results.  The results are grouped
-according to whether they are primitive, combining, or capture
-patterns.
-
 ## CLI Invocation Examples
 
 Show doc and usages for a peg special.
@@ -347,6 +307,46 @@ Below are some hints about where such locations might be:
   look for `Where should I install my own local completions?`
 * [fish](https://fishshell.com/docs/current/completions.html#where-to-put-completions)
 * [zsh](https://zsh.sourceforge.io/Doc/Release/Completion-System.html) -- good luck :P
+
+## Use from REPL
+
+There is a macro named `pdoc` (a bit like the built in `doc` macro)
+that can be used from the REPL to look up PEG special documentation.
+
+One way to use it is to start `janet` like:
+
+```
+janet -l pegdoc
+```
+
+Then at the REPL:
+
+```
+Janet 1.32.1-11d7af3f linux/x64/gcc - '(doc)' for help
+repl:1:> (pdoc if)
+
+
+    peg special
+
+    (if cond patt)
+
+    Tries to match patt only if cond matches as well.
+
+    cond will not produce any captures.
+
+nil
+```
+
+Alternatively, evaluate `(use pegdoc)` before invoking `(pdoc ...)`.
+
+Setting up one's user profile appropriately may be another way to make
+`pdoc` available (see `-R` and/or `JANET_PROFILE` info in the janet(1)
+manual page for hints).
+
+Like the `doc` macro, `pdoc` can also be invoked with a string (or no
+argument) to produce a set of search results.  The results are grouped
+according to whether they are primitive, combining, or capture
+patterns.
 
 ## Credits
 
