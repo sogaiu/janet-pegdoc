@@ -3,7 +3,7 @@
 Tool for doc lookups, usages, and quizzes of [Janet's PEG
 specials](https://janet-lang.org/docs/peg.html).
 
-`pdoc` manifests itself as a macro as well as a command line tool.
+`pdoc` manifests itself as a command line tool as well as a macro.
 
 ## Installation
 
