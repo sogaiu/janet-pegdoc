@@ -18,7 +18,7 @@
 
   (defn- inverted
     ```
-    Return the computed `data` if the tag name in `open-id` and `close-id` 
+    Return the computed `data` if the tag name in `open-id` and `close-id`
     does not exist
     ```
     [open-id data ws close-id]
@@ -30,7 +30,7 @@
 
   (defn- section
     ```
-    Return the computed `data` if the tag name in `open-id` and `close-id` 
+    Return the computed `data` if the tag name in `open-id` and `close-id`
     exists or is a non-empty list
 
     If the tag represents:
@@ -162,44 +162,49 @@
       :main (* :data :end-or-error)
       })
 
-  (peg/match
-    musty-peg
-    "{{tag}}")
-  # => @['(string (let [val (-> "tag" lookup (or "") string)] (escape val)))]
+  (peg/match musty-peg "{{tag}}")
+  # =>
+  @['(string (let [val (-> "tag" lookup (or "") string)] (escape val)))]
 
-  (deep=
-    #
-    (peg/match
-      musty-peg
-      "This is a {{simple}} template.")
-    #
-    @['(string "This is a" " "
-               (let [val (-> "simple" lookup (or "") string)]
-                 (escape val))
-               " template.")]) # => true
+  (peg/match musty-peg "This is a {{simple}} template.")
+  # =>
+  @['(string "This is a" " "
+             (let [val (-> "simple" lookup (or "") string)]
+               (escape val))
+             " template.")]
 
-  (deep=
-    #
-    (peg/match
-      musty-peg
-      ``
-      This is a
-        {{#nested}}
-          {{title}} {{expression}}
-        {{/nested}}
-        section on the outside.
-    ``)
-    #
-    @['(string
-         "This is a" "\n"
-         (let [val (lookup "nested")]
-           (cond
-             (indexed? val)
-             (string
-               (splice
-                 (seq [el :in val
-                       :before (array/push ctx el)
-                       :after (array/pop ctx)]
+  (peg/match musty-peg
+             (string "This is a\n"
+                     "  {{#nested}}\n"
+                     "    {{title}} {{expression}}\n"
+                     "  {{/nested}}\n"
+                     "  section on the outside."))
+  # =>
+  @['(string "This is a" "\n"
+             (let [val (lookup "nested")]
+               (cond
+                 (indexed? val)
+                 (string
+                   (splice
+                     (seq [el :in val
+                           :before (array/push ctx el)
+                           :after (array/pop ctx)]
+                       (string
+                         (string
+                           "    "
+                           (let [val (-> "title" lookup
+                                         (or "") string)]
+                             (escape val))
+                           " "
+                           (let [val (-> "expression" lookup
+                                         (or "") string)]
+                             (escape val))
+                           "\n")
+                         ""))))
+                 #
+                 (dictionary? val)
+                 (defer (array/pop ctx)
+                   (array/push ctx val)
                    (string
                      (string
                        "    "
@@ -211,39 +216,23 @@
                                      (or "") string)]
                          (escape val))
                        "\n")
-                     ""))))
-             #
-             (dictionary? val)
-             (defer (array/pop ctx)
-               (array/push ctx val)
-               (string
+                     ""))
+                 #
+                 val
                  (string
-                   "    "
-                   (let [val (-> "title" lookup
-                                 (or "") string)]
-                     (escape val))
-                   " "
-                   (let [val (-> "expression" lookup
-                                 (or "") string)]
-                     (escape val))
-                   "\n")
+                   (string
+                     "    "
+                     (let [val (-> "title" lookup
+                                   (or "") string)]
+                       (escape val))
+                     " "
+                     (let [val (-> "expression" lookup
+                                   (or "") string)]
+                       (escape val)) "\n")
+                   "")
+                 #
+                 :else
                  ""))
-             #
-             val
-             (string
-               (string
-                 "    "
-                 (let [val (-> "title" lookup
-                               (or "") string)]
-                   (escape val))
-                 " "
-                 (let [val (-> "expression" lookup
-                               (or "") string)]
-                   (escape val)) "\n")
-               "")
-             #
-             :else
-             ""))
-         "  section on the outside.")]) # => true
+             "  section on the outside.")]
 
   )

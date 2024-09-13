@@ -28,20 +28,16 @@
         :main (some (group :row))}))
 
   (peg/match csv-lang "great,scott,tiger,woods")
-  # => @[@["great" "scott" "tiger" "woods"]]
+  # =>
+  @[@["great" "scott" "tiger" "woods"]]
 
-  (deep=
-    #
-    (peg/match
-      csv-lang
-      ``
-      header1,header2,header3
-      this,is,nice
-      ,,,
-      ``)
-    #
-    @[@["header1" "header2" "header3"]
-      @["this" "is" "nice"]
-      @["" "" ""]]) # => true
+  (peg/match csv-lang
+             (string "header1,header2,header3\n"
+                     "this,is,nice\n"
+                     ",,,"))
+  #
+  @[@["header1" "header2" "header3"]
+    @["this" "is" "nice"]
+    @["" "" ""]]
 
   )
