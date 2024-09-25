@@ -21,7 +21,8 @@ jpm install
 ```
 
 In either case, success should lead to the command `pdoc` being
-available on `PATH` and a `pegdoc` directory under `JANET_PATH`.
+available on `PATH` and a `pegdoc` directory within a directory on
+`JANET_PATH`.
 
 ## CLI Invocation Examples
 
