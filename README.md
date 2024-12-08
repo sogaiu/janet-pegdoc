@@ -105,7 +105,53 @@ $ pdoc --quiz replace
 What value could work in the blank?
 ```
 
-Show all peg specials.
+Get basic help.
+
+```
+Usage: pdoc [option] [peg-special]
+
+View Janet PEG information.
+
+  -h, --help                   show this output
+
+  -d, --doc [<peg-special>]    show doc
+  -q, --quiz [<peg-special>]   show quiz question
+  -u, --usage [<peg-special>]  show usage
+
+  --bash-completion            output bash-completion bits
+  --fish-completion            output fish-completion bits
+  --zsh-completion             output zsh-completion bits
+  --raw-all                    show all names for completion
+
+With a peg-special, but no options, show docs and usages.
+
+If any of "boolean", "dictionary", "integer", "string",
+"struct", or "table" are specified as the "peg-special",
+show docs and usages about using those as PEG constructs.
+
+With the `-d` or `--doc` option, show docs for specified
+PEG special, or if none specified, for a randomly chosen one.
+
+With the `-q` or `--quiz` option, show quiz question for
+specified PEG special, or if none specified, for a randomly
+chosen one.
+
+With the `-u` or `--usage` option, show usages for
+specified PEG special, or if none specified, for a randomly
+chosen one.
+
+With no arguments, lists all PEG specials.
+
+Be careful to quote shortnames (e.g. *, ->, >, <-, etc.)
+appropriately so the shell doesn't process them in an
+undesired fashion.
+```
+
+## Conveniences
+
+### Cheatsheet
+
+Try `pdoc` by itself to get a "cheatsheet" of sorts:
 
 ```
 $ pdoc
@@ -211,54 +257,6 @@ Aliases
   (quote patt ?tag)      =  (capture patt ?tag)
   'patt                  =  (capture patt)
 ```
-
-Get basic help.
-
-```
-Usage: pdoc [option] [peg-special]
-
-View Janet PEG information.
-
-  -h, --help                   show this output
-
-  -d, --doc [<peg-special>]    show doc
-  -q, --quiz [<peg-special>]   show quiz question
-  -u, --usage [<peg-special>]  show usage
-
-  --bash-completion            output bash-completion bits
-  --fish-completion            output fish-completion bits
-  --zsh-completion             output zsh-completion bits
-  --raw-all                    show all names for completion
-
-With a peg-special, but no options, show docs and usages.
-
-If any of "boolean", "dictionary", "integer", "string",
-"struct", or "table" are specified as the "peg-special",
-show docs and usages about using those as PEG constructs.
-
-With the `-d` or `--doc` option, show docs for specified
-PEG special, or if none specified, for a randomly chosen one.
-
-With the `-q` or `--quiz` option, show quiz question for
-specified PEG special, or if none specified, for a randomly
-chosen one.
-
-With the `-u` or `--usage` option, show usages for
-specified PEG special, or if none specified, for a randomly
-chosen one.
-
-With no arguments, lists all PEG specials.
-
-Be careful to quote shortnames (e.g. *, ->, >, <-, etc.)
-appropriately so the shell doesn't process them in an
-undesired fashion.
-```
-
-## Conveniences
-
-### Cheatsheet
-
-Try `pdoc` by itself to get a "cheatsheet" of sorts.
 
 ### Flexible Option Position
 
