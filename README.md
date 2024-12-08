@@ -256,6 +256,10 @@ undesired fashion.
 
 ## Conveniences
 
+### Cheatsheet
+
+Try `pdoc` by itself to get a "cheatsheet" of sorts.
+
 ### Flexible Option Position
 
 As a convenience feature, options (e.g. `-u` or `-d`) can be specified
