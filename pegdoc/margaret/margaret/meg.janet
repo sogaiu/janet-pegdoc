@@ -22,6 +22,9 @@
       :string
       @{:main peg}
       #
+      :buffer
+      @{:main (string peg)}
+      #
       :number
       (do
         (assert (int? peg)
@@ -102,10 +105,6 @@
   (protect (tablify-peg {}))
   # =>
   [false "missing :main in grammar: {}"]
-
-  (protect (tablify-peg @"hello"))
-  # =>
-  [false "Unexpected type for peg @\"hello\": :buffer"]
 
   (protect (tablify-peg +))
   # =>
@@ -439,6 +438,9 @@
       a-state
       #
       :string
+      a-state
+      #
+      :buffer
       a-state
       #
       :number
@@ -1666,27 +1668,29 @@
 
 (defn cap-load
   [state cs]
-  (put state :scratch
-       (buffer/slice (get state :scratch)
-                     0 (get cs :scratch)))
-  (put state :captures
-       (array/slice (get state :captures)
-                    0 (get cs :captures)))
-  (put state :tags
-       (array/slice (get state :tags)
-                    0 (get cs :tagged-captures)))
-  (put state :tagged-captures
-       (array/slice (get state :tagged-captures)
-                    0 (get cs :tagged-captures))))
+  (-> state
+      (put :scratch
+           (buffer/slice (get state :scratch)
+                         0 (get cs :scratch)))
+      (put :captures
+           (array/slice (get state :captures)
+                        0 (get cs :captures)))
+      (put :tags
+           (array/slice (get state :tags)
+                        0 (get cs :tagged-captures)))
+      (put :tagged-captures
+           (array/slice (get state :tagged-captures)
+                        0 (get cs :tagged-captures)))))
 
 (defn cap-load-keept
   [state cs]
-  (put state :scratch
-       (buffer/slice (get state :scratch)
-                     0 (get cs :scratch)))
-  (put state :captures
-       (array/slice (get state :captures)
-                    0 (cs :captures))))
+  (-> state
+      (put :scratch
+           (buffer/slice (get state :scratch)
+                         0 (get cs :scratch)))
+      (put :captures
+           (array/slice (get state :captures)
+                        0 (cs :captures)))))
 
 (defn pushcap
   [state capture tag]
@@ -2411,7 +2415,7 @@
                   (return result nil))
 
                 (set chunk-start cur-idx))
-              
+
               (put state :text-end saved-end)
               (get state :text-end)))
           (log-out)
