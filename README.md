@@ -161,6 +161,7 @@ Primitive Patterns
   range                  =  (range r1 ?r2 ... ?rn)
   set                    =  (set chars)
   String ("...")
+  Buffer (@"...")
   Boolean (true, false)
 
 Combining Patterns
@@ -180,6 +181,7 @@ Combining Patterns
   split                  =  (split sep patt)
   sub                    =  (sub window-patt patt)
   thru                   =  (thru patt)
+  til                    =  (til sep patt)
   to                     =  (to patt)
 
 Captures
