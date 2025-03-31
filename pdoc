@@ -1,3 +1,5 @@
+#! /usr/bin/env janet
+
 (import pegdoc/main)
 
 (defn main
