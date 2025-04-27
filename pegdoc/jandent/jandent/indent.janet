@@ -217,19 +217,17 @@
            (:ws-bi "  ")])])
 
   (make-tree
-    ``
-    (do 
-    (def _0000by 
-    [0 1 2]) 
-    (var _0000bx 
-    (<function next> _0000by nil)) 
-    (while (<function not=> nil _0000bx) 
-    (def i 
-    (<function in> _0000by _0000bx)) 
-    (break) 
-    (set _0000bx 
-    (<function next> _0000by _0000bx))))
-    ``)
+    (string "(do \n"
+            "(def _0000by \n"
+            "[0 1 2]) \n"
+            "(var _0000bx \n"
+            "(<function next> _0000by nil)) \n"
+            "(while (<function not=> nil _0000bx) \n"
+            "(def i \n"
+            "(<function in> _0000by _0000bx)) \n"
+            "(break) \n"
+            "(set _0000bx \n"
+            "(<function next> _0000by _0000bx))))"))
   # =>
   '(:top
      @[(:ptuple
@@ -276,7 +274,7 @@
 # added `comment`
 (def indent-2-forms
   "A list of forms that are control forms and should be indented two spaces."
-  (invert ["case" "comment" "compif" "compwhen" "cond" "coro"
+  (invert ["case" "catseq" "comment" "compif" "compwhen" "cond" "coro"
            "def" "def-" "default" "defer" "defglobal" "defmacro" "defmacro-"
            "defn" "defn-" "do"
            "each" "eachp" "eachk" "eachy" "edefer" "ev/do-thread" "ev/spawn"
@@ -567,30 +565,30 @@
 
   (format
     ``
-    (do 
-    (def _0000by 
-    [0 1 2]) 
-    (var _0000bx 
-    (<function next> _0000by nil)) 
-    (while (<function not=> nil _0000bx) 
-    (def i 
-    (<function in> _0000by _0000bx)) 
-    (break) 
-    (set _0000bx 
+    (do
+    (def _0000by
+    [0 1 2])
+    (var _0000bx
+    (<function next> _0000by nil))
+    (while (<function not=> nil _0000bx)
+    (def i
+    (<function in> _0000by _0000bx))
+    (break)
+    (set _0000bx
     (<function next> _0000by _0000bx))))
     ``)
   # =>
   @``
-   (do 
-     (def _0000by 
-       [0 1 2]) 
-     (var _0000bx 
-       (<function next> _0000by nil)) 
-     (while (<function not=> nil _0000bx) 
-       (def i 
-         (<function in> _0000by _0000bx)) 
-       (break) 
-       (set _0000bx 
+   (do
+     (def _0000by
+       [0 1 2])
+     (var _0000bx
+       (<function next> _0000by nil))
+     (while (<function not=> nil _0000bx)
+       (def i
+         (<function in> _0000by _0000bx))
+       (break)
+       (set _0000bx
             (<function next> _0000by _0000bx))))
    ``
   )
