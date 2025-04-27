@@ -66,7 +66,7 @@
   # =>
   @[[:a 1]]
 
-  (z/s/to-entries @{:a 1 :b 2})
+  (sort (z/s/to-entries @{:a 1 :b 2}))
   # =>
   @[[:a 1] [:b 2]]
 
@@ -498,15 +498,6 @@
       z/node)
   # =>
   2
-
-  (-> (z/zip ['def 'm {:a 1 :b 2}])
-      z/down
-      z/rightmost
-      z/down
-      z/rightmost
-      z/node)
-  # =>
-  [:b 2]
 
   )
 

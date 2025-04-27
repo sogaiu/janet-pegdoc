@@ -161,15 +161,12 @@
 
   #(import ./janet-peg/janet-peg/location :as l)
 
-  (-> (l/par
-        ``
-        (# hi there
-        + 1 2)
-        ``)
-      zip-down
-      z/down
-      right-skip-wsc
-      z/node)
+  (-> (l/par (string "(# hi there\n"
+                     "+ 1 2)"))
+             zip-down
+             z/down
+             right-skip-wsc
+             z/node)
   # =>
   [:symbol @{:bc 1 :bl 2 :ec 2 :el 2} "+"]
 
@@ -206,11 +203,8 @@
 
   #(import ./janet-peg/janet-peg/location :as l)
 
-  (-> (l/par
-        ``
-        (# hi there
-        + 1 2)
-        ``)
+  (-> (l/par (string "(# hi there\n"
+                     "+ 1 2)"))
       zip-down
       z/down
       right-skip-wsc

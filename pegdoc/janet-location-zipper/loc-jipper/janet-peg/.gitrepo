@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/sogaiu/janet-peg
 	branch = master
-	commit = 7163e65efaa0390283469bfe7a09a2e64088efde
-	parent = 568f127e6638519c0524cea119fee93355328df5
+	commit = 5e961f1b8abee7f9209b87472d2fcfc8d93aff24
+	parent = 49129c0ca0e177d4b9b9b26ec39bb52fe15ba62e
 	method = merge
 	cmdver = 0.4.9

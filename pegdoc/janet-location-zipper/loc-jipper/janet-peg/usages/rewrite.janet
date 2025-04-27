@@ -106,11 +106,9 @@
 (comment
 
   (def src
-    ``
-    (+ 1 1)
-
-    (/ 2 3)
-    ``)
+    (string "(+ 1 1)\n"
+            "\n"
+            "(/ 2 3)"))
 
   (par src 0 :single)
   # =>
