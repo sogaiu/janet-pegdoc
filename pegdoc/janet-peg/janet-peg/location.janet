@@ -304,6 +304,23 @@
                 (:symbol @{:bc 2 :bl 1
                            :ec 3 :el 1} "x"))
 
+  (get (peg/match loc-grammar "' '[:a :b]") 2)
+  # =>
+  '(:quote @{:bc 1 :bl 1
+             :ec 11 :el 1}
+           (:whitespace @{:bc 2 :bl 1
+                          :ec 3 :el 1} " ")
+           (:quote @{:bc 3 :bl 1
+                     :ec 11 :el 1}
+                   (:bracket-tuple @{:bc 4 :bl 1
+                                     :ec 11 :el 1}
+                                   (:keyword @{:bc 5 :bl 1
+                                               :ec 7 :el 1} ":a")
+                                   (:whitespace @{:bc 7 :bl 1
+                                                  :ec 8 :el 1} " ")
+                                   (:keyword @{:bc 8 :bl 1
+                                               :ec 10 :el 1} ":b"))))
+
   )
 
 (def loc-top-level-ast

@@ -167,6 +167,10 @@
   # =>
   @[]
 
+  (peg/match jg "0x2.8FaP11")
+  # =>
+  @[]
+
   (peg/match jg "@\"i am a buffer\"")
   # =>
   @[]
