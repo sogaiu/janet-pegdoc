@@ -77,7 +77,11 @@
         (print "\n\n"
                (not-found sym))
         (break))
-      (def width (+ 8 (t/cols)))
+      (def cols
+        (if-let [cols (t/cols)]
+          cols
+          80))
+      (def width (+ 8 cols))
       (print "\n\n"
              indent-str
              "peg special")

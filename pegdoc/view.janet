@@ -7,7 +7,11 @@
 (defn configure
   []
   # width
-  (setdyn :pdoc-width (t/cols))
+  (def cols
+    (if-let [cols (t/cols)]
+      cols
+      80))
+  (setdyn :pdoc-width cols)
   # color
   (let [color-level (os/getenv "PDOC_COLOR")
         # XXX: tput colors more portable?

@@ -38,7 +38,11 @@
 
 (defn special-doc
   [content &opt width indent]
-  (default width (+ 8 (dyn :pdoc-width (t/cols))))
+  (def cols
+    (if-let [cols (t/cols)]
+      cols
+      80))
+  (default width (+ 8 (dyn :pdoc-width cols)))
   (default indent 0)
   (def lines
     (string/split "\n" content))
