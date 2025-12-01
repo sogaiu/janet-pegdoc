@@ -53,10 +53,10 @@
         peg)
       #
       (errorf "Unexpected type for peg %n: %n" peg (type peg))))
-    #
-    (table/setproto peg-tbl default-peg-grammar)
-    #
-    peg-tbl)
+  #
+  (table/setproto peg-tbl default-peg-grammar)
+  #
+  peg-tbl)
 
 (comment
 
@@ -388,6 +388,19 @@
                  :msg "3rd arg should be a keyword"}))
       (merge the-state
              (visit-peg (get the-peg 1) the-state)))
+    (defn check-cms
+      [the-peg the-state]
+      (assert-arity the-peg 2 3)
+      (assert (get {:function true :cfunction true}
+                   (type (get the-peg 2)))
+              {:peg the-peg
+               :msg "2nd arg should be a function"})
+      (when (> (length the-peg) 3)
+        (assert (keyword? (get the-peg 3))
+                {:peg the-peg
+                 :msg "3rd arg should be a keyword"}))
+      (merge the-state
+             (visit-peg (get the-peg 1) the-state)))
     (defn check-cmt
       [the-peg the-state]
       (assert-arity the-peg 2 3)
@@ -516,6 +529,7 @@
             'split (check-split a-peg a-state)
             'replace (check-replace a-peg a-state)
             '/ (check-replace a-peg a-state)
+            'cms (check-cms a-peg a-state)
             'cmt (check-cmt a-peg a-state)
             'error (check-error a-peg a-state)
             'backmatch (check-backmatch a-peg a-state)
@@ -1105,6 +1119,32 @@
   '@{:error {:msg "3rd arg should be a keyword"
              :peg (replace (capture "bat") {"bat" "rodent"} 1)}}
 
+  (analyze ~(cms (capture 1) ,string?))
+  # =>
+  '@{:has-backref false}
+
+  (analyze ~(cms (sequence (capture "turtle" :a)
+                           (backref :a))
+                 ,buffer))
+  # =>
+  @{:has-backref true}
+
+  (analyze '(cms))
+  # =>
+  '@{:error {:msg "needs between 2 and 3 args"
+             :peg (cms)}}
+
+  (analyze '(cms (capture 1) :eve))
+  '@{:error {:msg "2nd arg should be a function"
+             :peg (cms (capture 1) :eve)}}
+
+  (analyze '(cms (capture "the flag")
+                 ,tuple
+                 2r0010))
+  # =>
+  '@{:error {:msg "2nd arg should be a function"
+             :peg (cms (capture "the flag") (unquote tuple) 2)}}
+
   (analyze ~(cmt (capture 1) ,string?))
   # =>
   '@{:has-backref false}
@@ -1468,20 +1508,20 @@
 (comment
 
   (state? @{:captures @[]
-             :extrav @[]
-             :grammar ~(capture "a" :x)
-             :has-backref true
-             :linemap @[]
-             :linemaplen -1
-             :mode :peg-mode-normal
-             :original-text "123"
-             :outer-text-end 3
-             :scratch @""
-             :start 0
-             :tagged-captures @[]
-             :tags @[]
-             :text-end 3
-             :text-start 0})
+            :extrav @[]
+            :grammar ~(capture "a" :x)
+            :has-backref true
+            :linemap @[]
+            :linemaplen -1
+            :mode :peg-mode-normal
+            :original-text "123"
+            :outer-text-end 3
+            :scratch @""
+            :start 0
+            :tagged-captures @[]
+            :tags @[]
+            :text-end 3
+            :text-start 0})
   # =>
   true
 
@@ -2512,6 +2552,35 @@
               (cap-load-keept state cs)
               (pushcap state cap tag)
               res-idx))
+          (log-out)
+          ret)
+
+        # RULE_MATCHSPLICE
+        (= 'cms op)
+        (do
+          (log-in)
+          (def patt (in args 0))
+          (def subst (in args 1))
+          (def tag (when (> (length args) 2) (in args 2)))
+          (def old-mode (get state :mode))
+          (def cs (cap-save state))
+          (put state :mode :peg-mode-normal)
+          (def res-idx (peg-rule state patt index grammar))
+          (put state :mode old-mode)
+          (def ret
+            (label result
+              (when res-idx
+                (def cap
+                  # use only the new captures
+                  (subst ;(array/slice (get state :captures)
+                                       (get cs :captures))))
+                (cap-load-keept state cs)
+                (when (not (truthy? cap))
+                  (return result nil))
+                (if (indexed? cap)
+                  (each elt cap (pushcap state elt tag))
+                  (pushcap state cap tag))
+                res-idx)))
           (log-out)
           ret)
 
