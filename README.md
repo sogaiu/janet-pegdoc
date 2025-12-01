@@ -189,6 +189,7 @@ Captures
   argument               =  (argument n ?tag)
   backref (->)           =  (backref prev-tag ?tag)
   capture (<-, quote)    =  (capture patt ?tag)
+  cms                    =  (cms patt fun ?tag)
   cmt                    =  (cmt patt fun ?tag)
   column                 =  (column ?tag)
   constant               =  (constant k ?tag)
