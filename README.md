@@ -5,6 +5,10 @@ specials](https://janet-lang.org/docs/peg.html).
 
 `pdoc` manifests itself as a command line tool as well as a macro.
 
+## Status
+
+See [pdoc](https://github.com/sogaiu/pdoc) for a successor.
+
 ## Installation
 
 Quick:
